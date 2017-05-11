@@ -16,9 +16,9 @@
 </head>
 <body>
 <header>
-    <%- include('partials/navbar.ejs', {active: "signup"}); %>
-    <%if(message=="")%>
-    <%if(message!="") {%> <div class= "alert alert-danger" <strong> <%= message %> </strong> </div> <%}%>
+    <%- include('partials/navbar.ejs', {active: "home"}); %>
+    <%if(error=="")%>
+    <%if(error!="") {%> <div class= "alert alert-danger" <strong> <%= error %> </strong> </div> <%}%>
 </header>
 
 <div class="slider">

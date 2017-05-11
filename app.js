@@ -10,6 +10,7 @@ var ObjectId = Schema.ObjectId;
 var User = mongoose.model('User', new Schema({
 	id: ObjectId,
 	company: String,
+	job: String,
 	username: {type: String, unique: true},
 	email: {type: String, unique: true},
 	password: String,
@@ -35,37 +36,44 @@ app.use(session({
 }));
 
 app.get('/', function (req, res) {
-  res.render('index', {message: ''});
+	res.render('index');
+	error = '';
 });
 
 app.get('/register', function(req,res) {
-	res.render('register', {message: ''});
+	res.render('register');
+	error = '';
 });
 
 app.post('/register', function(req,res) {
 	var user = new User({
 		company: req.body.company,
+		job: req.body.job,
 		username: req.body.username,
 		email: req.body.email,
 		password: req.body.password,
+		error: "",
 	});
 	user.save(function(err) {
 		if(err){
 			if(err.code == 11000)
 			{
-				res.render('register', {message: 'That email is taken, please try another email.'});
+				error: 'That email is taken, please try another email.';
+				res.render('register');
 			}
 		}
 		else{
 			User.findOne( {email: req.body.email} , function(err, user) {
     			if(!user){
-    				res.render('login', {message: 'Invalid email or password'});
+    				error: 'Invalid email or password';
+    				res.render('login');
     			}else{
     				if(req.body.password == user.password){
     					req.session.user = user;
     					res.redirect('/profile');
     				} else{
-    					res.render('login', {message: 'Invalid email or password'});
+    					error: 'Invalid email or password';
+    					res.render('login');
     				}	
     			}
     		});
@@ -74,19 +82,22 @@ app.post('/register', function(req,res) {
 });
 
 app.get('/login', function(req,res) {
-	res.render('login', {message: ''});
+	res.render('login');
+	error = '';
 });
 
 app.post('/login', function(req,res) {
 	User.findOne( {email: req.body.email} , function(err, user) {
     	if(!user){
-    		res.render('login', {message: 'Invalid email or password'});
+    		error: 'Invalid email or password';
+    		res.render('login');
     	}else{
     		if(req.body.password == user.password){
     			req.session.user = user;
     			res.redirect('/profile');
     		} else{
-    			res.render('login', {message: 'Invalid email or password'});
+    			error: 'Invalid email or password';
+    			res.render('login');
     		}
     	}
     });
@@ -100,22 +111,29 @@ app.get('/profile', function(req,res) {
 				res.redirect('/login');
 			} else {
 				res.locals.user = user;
-				res.render('profile', {message: ''});
+				res.render('profile');
 			}
 		});
 	} else {
-		req.session.message = 'Incorrect username or password';
+		error = "You must Sign In to view your Profile.";
 		res.redirect('/login');
-		res.render('login', { message: req.session.message });
-		delete res.session.message;
 	}
 });
 
 app.get('/logout', function(req, res) {
 	req.session.reset();
-	req.session.message = 'You have sucessfully logged out!';
-	res.redirect('/index');
-	res.render('index', { message: req.session.message });
-	delete res.session.message;
-})
+	error = 'You have sucessfully logged out!';
+	res.redirect('/');
+});
+
+app.get('/edit_profile', function(req,res){
+	res.render('edit_profile');
+	error = '';
+});
+
+app.get('/change_picture', function(req, res){
+	res.render('change_picture');
+	error = '';
+
+});
 app.listen(3000);
