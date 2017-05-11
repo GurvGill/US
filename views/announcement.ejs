@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Us</title>
+
+    <!-- Bootstrap -->
+    <link href="stylesheets/bootstrap1.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="stylesheets/font-awesome.min.css">
+    <link rel="stylesheet" href="stylesheets/jquery.bxslider.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/isotope.css" media="screen" />
+    <link rel="stylesheet" href="stylesheets/animate.css">
+    <link rel="stylesheet" href="javascripts/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+    <link href="stylesheets/prettyPhoto.css" rel="stylesheet" />
+    <link href="stylesheets/style.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://bootswatch.com/cosmo/bootstrap.min.css"/>
+</head>
+<body>
+<header>
+    <%- include('partials/navbar.ejs', {active: ""}); %>
+    <%if(error=="")%>
+    <%if(error!="") {%> <div class= "alert alert-danger" <strong> <%= error %> </strong> </div> <%}%>
+</header>
+
+<div class="container">
+    <div class="row main">
+        <div class="panel-heading">
+            <div class="panel-title text-center">
+                <h1 class="title">Post an announcement</h1>
+                <hr />
+            </div>
+        </div>
+        <form class="form-horizontal" method="post" action="#">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    <div class="pull-left">
+                        <a href="#">
+                            <img class="media-object img-circle" src="https://lut.im/7JCpw12uUT/mY0Mb78SvSIcjvkf.png" width="50px" height="50px" style="margin-right:8px; margin-top:-5px;">
+                        </a>
+                    </div>
+                    <h4><a href="/profile" style="text-decoration:none;"><strong><%= user.username %></strong></a> – <small> <%= user.job %><small><a href="#" style="text-decoration:none; color:grey;"><i></a></small></small></h4>
+                    <hr>
+                    <div class="form-group">
+                            <textarea type="text" class="form-control" rows="5" placeholder="Announement"></textarea>
+                            </div>
+                            <hr>
+                            <div>
+                                <div class="pull-left">
+                                    <p class="text-muted" style="margin-left:5px;"><i class="fa fa-globe" aria-hidden="true"></i> Public</p>
+                                    </div>
+                                    <br>
+                                </div>
+                                 <hr>
+                             </div>
+                             <span class = "margin-right" >
+                        <div class="form-group ">
+                        <button type="login-button" class="btn btn-default btn-lg  login-button" href="/announcement">Post Announement</button>
+                        </div>
+                        </span>
+            </div>
+        </div>
+        </i>
+        </a>
+        </small>
+        </small>
+        </h4>
+        </div>
+        </div>
+        </form>
+    </div>
+</div>
+
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="javascripts/jquery-2.1.1.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="javascripts/bootstrap1.min.js"></script>
+<script src="javascripts/wow.min.js"></script>
+<script src="javascripts/fancybox/jquery.fancybox.pack.js"></script>
+<script src="javascripts/jquery.easing.1.3.js"></script>
+<script src="javascripts/jquery.bxslider.min.js"></script>
+<script src="javascripts/jquery.prettyPhoto.js"></script>
+<script src="javascripts/jquery.isotope.min.js"></script>
+<script src="javascripts/functions.js"></script>
+<script>wow = new WOW({}).init();</script>
+
+</body>
+</html>

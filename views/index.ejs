@@ -16,7 +16,8 @@
 </head>
 <body>
 <header>
-    <%- include('partials/navbar.ejs', {active: "home"}); %>
+    <%if(user==null) {%> <div> <%- include('partials/navbar.ejs', {active: "home"}) %> </div> <%} %>
+    <%if(user!=null) {%> <div> <%- include('partials/navbar.ejs', {active: "usermenu"}) %> </div> <%} %>
     <%if(error=="")%>
     <%if(error!="") {%> <div class= "alert alert-danger" <strong> <%= error %> </strong> </div> <%}%>
 </header>
