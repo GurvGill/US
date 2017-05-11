@@ -35,11 +35,11 @@ app.use(session({
 }));
 
 app.get('/', function (req, res) {
-  res.render('index', {error: ''});
+  res.render('index', {message: ''});
 });
 
 app.get('/register', function(req,res) {
-	res.render('register', {error: ''});
+	res.render('register', {message: ''});
 });
 
 app.post('/register', function(req,res) {
@@ -53,19 +53,19 @@ app.post('/register', function(req,res) {
 		if(err){
 			if(err.code == 11000)
 			{
-				res.render('register', {error: 'That email is taken, please try another email.'});
+				res.render('register', {message: 'That email is taken, please try another email.'});
 			}
 		}
 		else{
 			User.findOne( {email: req.body.email} , function(err, user) {
     			if(!user){
-    				res.render('login', {error: 'Invalid email or password'});
+    				res.render('login', {message: 'Invalid email or password'});
     			}else{
     				if(req.body.password == user.password){
     					req.session.user = user;
     					res.redirect('/profile');
     				} else{
-    					res.render('login', {error: 'Invalid email or password'});
+    					res.render('login', {message: 'Invalid email or password'});
     				}	
     			}
     		});
@@ -74,19 +74,19 @@ app.post('/register', function(req,res) {
 });
 
 app.get('/login', function(req,res) {
-	res.render('login', {error: ''});
+	res.render('login', {message: ''});
 });
 
 app.post('/login', function(req,res) {
 	User.findOne( {email: req.body.email} , function(err, user) {
     	if(!user){
-    		res.render('login', {error: 'Invalid email or password'});
+    		res.render('login', {message: 'Invalid email or password'});
     	}else{
     		if(req.body.password == user.password){
     			req.session.user = user;
     			res.redirect('/profile');
     		} else{
-    			res.render('login', {error: 'Invalid email or password'});
+    			res.render('login', {message: 'Invalid email or password'});
     		}
     	}
     });
@@ -100,12 +100,22 @@ app.get('/profile', function(req,res) {
 				res.redirect('/login');
 			} else {
 				res.locals.user = user;
-				res.render('profile', {error: 'Profile found.'});
+				res.render('profile', {message: ''});
 			}
 		});
 	} else {
-		res.render('login', {error: 'You must Sign In to view your profile.'});
+		req.session.message = 'Incorrect username or password';
+		res.redirect('/login');
+		res.render('login', { message: req.session.message });
+		delete res.session.message;
 	}
 });
 
+app.get('/logout', function(req, res) {
+	req.session.reset();
+	req.session.message = 'You have sucessfully logged out!';
+	res.redirect('/index');
+	res.render('index', { message: req.session.message });
+	delete res.session.message;
+})
 app.listen(3000);

@@ -22,8 +22,8 @@
 <body>
 <header>
     <%- include('partials/navbar.ejs', {active: "signup"}); %>
-    <%if(error=="")%>
-    <%if(error!="") {%> <div class= "alert alert-danger" <strong> <%= error %> </strong> </div> <%}%>
+    <%if(message=="")%>
+    <%if(message!="") {%> <div class= "alert alert-danger" <strong> <%= message %> </strong> </div> <%}%>
 </header>
 
 <div class="container">
