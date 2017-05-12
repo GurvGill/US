@@ -17,12 +17,23 @@ var User = mongoose.model('User', new Schema({
 	password: String,
 }));
 
+var Announcement = mongoose.model('announcements', new Schema({
+	id: ObjectId,
+	announcement: String,
+	email: String,
+}));
+
 var app = express();
 app.set('view engine', 'ejs');
 app.locals.pretty = true;
 
 // connect to mongo
-mongoose.connect('mongodb://Gurvir:hello1@ds133271.mlab.com:33271/us-db');
+mongoose.connect('mongodb://Gurvir:hello1@ds157677.mlab.com:57677/usdb');
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+    db.once('open', function callback () {
+        console.log('Connected To Mongo Database');
+    });
 
 //middleware
 app.use(bodyParser.urlencoded({ extended: true}));
@@ -42,7 +53,7 @@ app.get('/', function (req, res) {
 		User.findOne( { email: req.session.user.email }, function(err, user){
 		if(!user){
 			req.session.reset();
-			res.redirect('/login');
+			res.redirect("/login");
 		} else {
 			res.locals.user = user;
 			res.render('index');
@@ -75,21 +86,21 @@ app.post('/register', function(req,res) {
 		if(err){
 			if(err.code == 11000)
 			{
-				error: 'That email is taken, please try another email.';
+				res.locals.error = 'That email is taken, please try another email.';
 				res.render('register');
 			}
 		}
 		else{
 			User.findOne( {email: req.body.email} , function(err, user) {
     			if(!user){
-    				error: 'Invalid email or password';
+    				res.locals.error = 'Invalid email or password';
     				res.render('login');
     			}else{
     				if(req.body.password == user.password){
     					req.session.user = user;
-    					res.redirect('/profile');
+    					res.redirect("/profile");
     				} else{
-    					error: 'Invalid email or password';
+    					res.locals.error = 'Invalid email or password';
     					res.render('login');
     				}	
     			}
@@ -108,14 +119,14 @@ app.post('/login', function(req,res) {
 	res.locals.error = error;
 	User.findOne( {email: req.body.email} , function(err, user) {
     	if(!user){
-    		error: 'Invalid email or password';
+    		res.locals.error = 'Invalid email or password';
     		res.render('login');
     	}else{
     		if(req.body.password == user.password){
     			req.session.user = user;
-    			res.redirect('/profile');
+    			res.redirect("/profile");
     		} else{
-    			error: 'Invalid email or password';
+    			res.locals.error = 'Invalid email or password';
     			res.render('login');
     		}
     	}
@@ -128,15 +139,15 @@ app.get('/profile', function(req,res) {
 		User.findOne( { email: req.session.user.email }, function(err, user){
 			if(!user){
 				req.session.reset();
-				res.redirect('/login');
+				res.redirect("/login");
 			} else {
 				res.locals.user = user;
-				res.render('profile');
+				res.render("profile");
 			}
 		});
 	} else {
 		error = "You must Sign In to view your Profile.";
-		res.redirect('/login');
+		res.redirect("/login");
 	}
 });
 
@@ -144,7 +155,7 @@ app.get('/logout', function(req, res) {
 	res.locals.error = error;
 	req.session.reset();
 	error = 'You have sucessfully logged out!';
-	res.redirect('/');
+	res.redirect("/");
 });
 
 app.get('/edit_profile', function(req,res){
@@ -161,16 +172,82 @@ app.get('/change_picture', function(req, res){
 
 app.get('/announcement', function(req,res){
 	res.locals.error = error;
-	User.findOne( { email: req.session.user.email }, function(err, user){
+	if(req.session && req.session.user){
+		User.findOne( { email: req.session.user.email }, function(err, user){
 		if(!user){
 			req.session.reset();
-			res.redirect('/login');
+			res.locals.error = "Please Sign in to Post an announcement";
+			res.redirect("/login");
 		} else {
 			res.locals.user = user;
-			res.render('announcement');
-			error = '';
+			res.render("announcement");
+			res.locals.error = '';
 		}
 	});
+	} else{
+		res.locals.user = null;
+		error = "Please Sign in to Post an announcement";
+		res.render('/login');
+	}
 });
+
+app.post('/announcement', function(req,res){
+	res.locals.error = error;
+	if(req.session && req.session.user){
+		User.findOne( { email: req.session.user.email }, function(err, user){
+		if(!user){
+			req.session.reset();
+			res.locals.error = "Please Sign in to Post an announcement";
+			res.redirect("/login");
+		} else {
+			res.locals.user = user;
+			var announcement = new Announcement({
+				announcement: req.body.announcement,
+				email: user.email,
+			});
+			announcement.save(function(err) {
+				if(err)
+				{
+					res.locals.error = "Try again!";
+					res.render("announcement");
+				} else {
+					res.redirect("/stream");
+					res.locals.error = '';
+				}
+			});	
+		}
+	});
+	} else{
+		res.locals.user = null;
+		error = "Please Sign in to Post an announcement";
+		res.render('announcement');
+	}
+});
+
+app.get('/stream', function(req,res){
+	res.locals.error = error;
+	if(req.session && req.session.user){
+		User.findOne( { email: req.session.user.email }, function(err, user){
+			if(!user){
+				req.session.reset();
+				res.locals.error = "Please Sign in. Stream is private access for Users only";
+				res.redirect("/login");
+			} else {
+				res.locals.user = user;
+				Announcement.find(function (err, announcement) {
+  					if (err) 
+  					return console.error(err);
+ 					console.log(announcement);
+				});
+				res.render("stream");
+				res.locals.error = '';
+			}
+		});
+	} else{
+		res.locals.user = null;
+		error = "Please Sign in to view Stream.";
+		res.redirect("/login");
+	}
+})
 
 app.listen(3000);

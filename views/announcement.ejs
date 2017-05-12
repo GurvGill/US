@@ -45,7 +45,7 @@
                     <h4><a href="/profile" style="text-decoration:none;"><strong><%= user.username %></strong></a> – <small> <%= user.job %><small><a href="#" style="text-decoration:none; color:grey;"><i></a></small></small></h4>
                     <hr>
                     <div class="form-group">
-                            <textarea type="text" class="form-control" rows="5" placeholder="Announement"></textarea>
+                            <textarea type="text" name="announcement" class="form-control" rows="5" placeholder="Announcement"></textarea>
                             </div>
                             <hr>
                             <div>
@@ -57,8 +57,8 @@
                                  <hr>
                              </div>
                              <span class = "margin-right" >
-                        <div class="form-group ">
-                        <button type="login-button" class="btn btn-default btn-lg  login-button" href="/announcement">Post Announement</button>
+                        <div class="form-group">
+                        <button type="submit" class="btn btn-default btn-lg  login-button" href="/announcement">Post Announcement</button>
                         </div>
                         </span>
             </div>
