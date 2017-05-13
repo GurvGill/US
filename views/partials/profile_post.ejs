@@ -18,10 +18,6 @@
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dd1" style="float: right;">
-                                    <li><a href="#"><i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i> Report</a></li>
-                                    <li><a href="#"><i class="fa fa-fw fa-ban" aria-hidden="true"></i> Ignore</a></li>
-                                    <li><a href="#"><i class="fa fa-fw fa-bell" aria-hidden="true"></i> Enable notifications for this post</a></li>
-                                    <li><a href="#"><i class="fa fa-fw fa-eye-slash" aria-hidden="true"></i> Hide</a></li>
                                     <li role="separator" class="divider"></li>
                                     <li><a href="#"><i class="fa fa-fw fa-trash" aria-hidden="true"></i> Delete</a></li>
                                 </ul>
@@ -34,30 +30,12 @@
                     </div>
                     <hr>
                     <div>
-                        <div class="pull-right btn-group-xs">
-                            <a class="btn btn-default btn-xs"><i class="fa fa-heart" aria-hidden="true"></i> Like</a>
-                            <a class="btn btn-default btn-xs"><i class="fa fa-comment" aria-hidden="true"></i> Comment</a>
-                        </div>
                         <div class="pull-left">
                             <p class="text-muted" style="margin-left:5px;"><i <i class="fa fa-tags" aria-hidden="true"></i> <%= announcement[count].job %> </p>
                         </div>
                         <br>
                     </div>
                     <hr>
-                    <div class="media">
-                        <div class="pull-left">
-                            <a href="#">
-                                <img class="media-object img-circle" src="https://lut.im/7JCpw12uUT/mY0Mb78SvSIcjvkf.png" width="35px" height="35px" style="margin-left:3px; margin-right:-5px;">
-                            </a>
-                        </div>
-                        <form class="form-horizontal" method="post" action="/comment">
-                        <div class="media-body">
-                             <input type="text" name="id" class='hidden' value=<%=announcement[count]._id %>>
-                             <input type="text" class="form-control" rows="1" name="mess" placeholder="Comment"/>
-                            <button type="login_button"  class="btn btn-default btn-xs" ><i class="fa fa-comment" aria-hidden="true" href="/comment"></i> Add Comment</button> </a>
-                        </div>
-                        </form>
-                    </div>
                 </div>
             </div>
         </div>

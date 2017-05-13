@@ -256,6 +256,8 @@ overflow: hidden;
 .main-feature .text-center p {
   color:#fff;
 }
+.hidden {
+  display: none; }
 /*===========================
   about-us
 ============================ */

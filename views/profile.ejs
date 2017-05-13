@@ -20,17 +20,17 @@
                         </div>
                         <div class="media-body">
                             <hr>
-                            <h3><strong>Bio</strong></h3>
-                            <p> gotta write some bio here </p>
+                            <h3><strong>Bio:</strong></h3>
+                            <p> <%=user.bio%> </p>
                             <hr>
-                            <h3><strong>Location</strong></h3>
-                            <p>Earth</p>
+                            <h3><strong>Company:</strong></h3>
+                            <p><%=user.company%></p>
                             <hr>
-                            <h3><strong>Gender</strong></h3>
-                            <p>Unknown</p>
+                            <h3><strong>Job Title:</strong></h3>
+                            <p><%=user.job%></p>
                             <hr>
-                            <h3><strong>Birthday</strong></h3>
-                            <p>January 01 1901</p>
+                            <h3><strong>Phone:</strong></h3>
+                            <p><%=user.phone%></p>
                         </div>
                     </div>
                 </div>
@@ -41,25 +41,12 @@
                 <div class="panel-body">
                     <span>
                         <h1 class="panel-title pull-left" style="font-size:30px;"><%= user.username %> <small> - <%= user.email %> </small></h1>
-                        <div class="dropdown pull-right">
-                            <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                Friends
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                <li><a href="#">Familly</a></li>
-                                <li><a href="#"><i class="fa fa-fw fa-check" aria-hidden="true"></i> Friends</a></li>
-                                <li><a href="#">Work</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="#"><i class="fa fa-fw fa-plus" aria-hidden="true"></i> Add a new aspect</a></li>
-                            </ul>
-                        </div>
                     </span>
                     <br><br>
                     <i class="fa fa-tags" aria-hidden="true"></i> <a href="/tags/" class="tag">#<%= user.company %> </a> <a href="/tags/" class="tag">#<%= user.job %></a> 
                     <br><br><hr>
                     <span class="pull-left">
-                        <a href="/announcement" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-fw fa-files-o" aria-hidden="true"></i> Write Announcement</a>
+                        <a href="/announcement" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-fw fa-files-o" aria-hidden="true"></i> Post Announcement</a>
                         <a href="/photos" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-fw fa-picture-o" aria-hidden="true"></i> Photos <span class="badge">2</span></a>
                         <a href="#" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-fw fa-users" aria-hidden="true"></i> Contacts <span class="badge">1</span></a>
                     </span>
@@ -71,10 +58,12 @@
                 </div>
             </div>
             <hr>
+            
     <ul>
     <% for(var i = (count-1); i >= 0; i--) {%>
-       <a><%if(announcement[i].email == user.email && announcement[i].comment=="") {%><%- include("partials/post.ejs", {count: i}) %> <%}%> %></a>
-        <a> <%if(announcement[i].email != user.email && announcement[i].comment!="") {%><%- include("partials/comment.ejs", {count: i}) %> <%}%> %></a>
+       <a><%if(announcement[i].email == user.email && announcement[i].comment=="") 
+       {%><%- include("partials/profile_post.ejs", {count: i}) %> <%}%> %></a>
+        <a> <%if(announcement[i].email != user.email && announcement[i].comment!="") {%><%- include("partials/profile_comment.ejs", {count: i}) %> <%}%> %></a>
        <% } %>
     </ul>   
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
