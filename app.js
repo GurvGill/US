@@ -145,15 +145,16 @@ app.post('/register', function(req,res) {
     			}else{
     				if(req.body.password == user.password){
     					req.session.user = user;
+    					res.locals.user = user;
     					res.redirect("/profile");
     				} else{
     					res.locals.error = 'Invalid email or password';
-    					res.render('login');
+    					res.redirect('login');
     				}	
     			}
     		});
 		}
-	})
+	});
 });
 
 app.get('/login', function(req,res) {
@@ -184,7 +185,7 @@ app.post('/login', function(req,res) {
 				res.locals.user = user;
 				res.locals.count = global.c;
 				res.locals.announcement = global.a;
-    			res.render("profile");
+    			res.redirect("/profile");
     		} else{
     			res.locals.error = 'Incorrect password';
     			res.render('login');
@@ -270,7 +271,7 @@ app.get('/edit_profile', function(req,res){
 	} else{
 		res.locals.user = null;
 		error = "Please Sign in to edit profile.";
-		res.render('/login');
+		res.redirect('/login');
 	}
 });
 
@@ -303,7 +304,7 @@ app.get('/password', function(req, res){
 	} else{
 		res.locals.user = null;
 		error = "Please Sign in to change password.";
-		res.render('/login');
+		res.redirect('/login');
 	}
 });
 
@@ -324,7 +325,7 @@ app.get('/announcement', function(req,res){
 	} else{
 		res.locals.user = null;
 		error = "Please Sign in to Post an announcement";
-		res.render('/login');
+		res.redirect('/login');
 	}
 });
 
@@ -424,6 +425,49 @@ app.get('/stream', function(req,res){
 	}
 }); 
 
+app.get('/comment', function(req,res){
+	res.locals.error = error;
+	if(req.session && req.session.user){
+		User.findOne( { email: req.session.user.email }, function(err, user){
+		if(!user){
+			req.session.reset();
+			res.locals.error = "Please Sign in to comment";
+			res.redirect("/login");
+		} else {
+			Announcement.count(function(err, count)
+				{
+					if(err){}
+					global.c = count;
+				});
+				Announcement.find(function(err, announcement)
+				{
+					if(err){}
+					global.a = announcement;
+				});
+				Comment.count(function(err, count){
+					if(err)
+					global.num = count;
+				});
+				Comment.find(function(err,comment){
+					if(err){}
+					global.com = comment;
+				});
+				res.locals.user = user;
+				res.locals.announcement = global.a;
+				res.locals.count = global.c;
+				res.locals.com = global.com;
+				res.locals.num = global.num;
+				res.redirect("/stream");
+				res.locals.error = '';
+		}
+	});
+	} else{
+		res.locals.user = null;
+		error = "Please Sign in to to comment";
+		res.redirect('/login');
+	}
+});
+
 app.post('/comment', function(req,res){
 	res.locals.error = error;
 	if(req.session && req.session.user){
@@ -455,37 +499,36 @@ app.post('/comment', function(req,res){
 					}
 				});	
 				Announcement.count(function(err, count)
-						{
-							if(err){}
-							global.c = count;
-						});
-						Announcement.find(function(err, announcement)
-						{
-							if(err){}
-							global.a = announcement;
-						});
-						Comment.count(function(err, count){
-							if(err)
-							global.num = count;
-						});
-						Comment.find(function(err,comment){
-							if(err){}
-							global.com = comment;
-						});
-						console.log(num);
-						res.locals.user = user;
-						res.locals.announcement = global.a;
-						res.locals.count = global.c;
-						res.locals.com = global.com;
-						res.locals.num = global.num;
-						res.render("stream");
-						res.locals.error = '';		
+				{
+					if(err){}
+					global.c = count;
+				});
+				Announcement.find(function(err, announcement)
+				{
+					if(err){}
+					global.a = announcement;
+				});
+				Comment.count(function(err, count){
+					if(err)
+					global.num = count;
+				});
+				Comment.find(function(err,comment){
+					if(err){}
+					global.com = comment;
+				});
+				res.locals.user = user;
+				res.locals.announcement = global.a;
+				res.locals.count = global.c;
+				res.locals.com = global.com;
+				res.locals.num = global.num;
+				res.redirect("/comment");
+				res.locals.error = '';		
 			}
 		});
 	} else{
 		res.locals.user = null;
 		error = "Please Sign in to comment on an announcement";
-		res.redirect('stream');
+		res.redirect('/stream');
 	}
 });
 
@@ -517,7 +560,7 @@ app.post('change_password', function(req,res){
 	} else{
 		res.locals.user = null;
 		error = "Please Sign in";
-		res.render('/login');
+		res.redirect('/login');
 	}
 });
 app.listen(3000);
