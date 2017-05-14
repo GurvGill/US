@@ -35,7 +35,7 @@
             </div>
         </div>
         <div class="main-login main-center">
-            <form class="form-horizontal" method="post" action="#">
+            <form id="register" class="form-horizontal" method="post" action="#">
 
                 <div class="form-group">
                     <label for="name" class="cols-sm-2 control-label">Company Name</label>
@@ -92,7 +92,7 @@
                     <div class="cols-sm-10">
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fa fa-lock fa-lg" aria-hidden="true"></i></span>
-                            <input type="password" class="form-control" name="confirm_password" placeholder="Confirm your Password", required=true, minlength=6/>
+                            <input type="password" class="form-control" name="confirm_password" placeholder="Confirm your Password", required=true, minlength=6, checked="" =/>
                         </div>
                     </div>
                 </div>
@@ -107,8 +107,47 @@
 </div>
 
 <script type="text/javascript" src="assets/js/bootstrap.js"></script>
+<script src='//code.jquery.com/jquery-1.9.1.min.js'></script>
+<script src='//cdn.kendostatic.com/2013.3.1119/js/kendo.all.min.js'></script>
+
+<script type="text/javascript">
+ $(function() {
+
+      // cache references to input controls
+      var password = $('#password');
+      var confirmPassword = $('#confirm_password');
+
+      $("#register").Validator({
+
+        rules: {
+
+          passwordMatch: function(input) {
+
+            // passwords must match
+
+            if (input.is('#confirm_password')) {
+              return $.trim(password.val()) === $.trim(confirmPassword.val());
+            }
+
+            return true;
+
+          },
+        },
+        messages: {
+
+          // custom error messages. email gets picked up 
+          // automatically for any inputs of that type
+
+          passwordMatch: 'The passwords don\'t match',
+          emailMatch: 'The email addresses don\'t match',
+          email: 'That doesn\'t appear to be a valid email address'
+
+        }
+
+      }).data('kendoValidator');
+
+    });
+</script>
 </body>
 </html>
-</html>
-
 

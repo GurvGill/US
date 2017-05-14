@@ -130,7 +130,12 @@ app.post('/register', function(req,res) {
 		birthday: "xx/xx/xxxx",
 		picture: "./public/images/6.jpg",
 	});
-	user.save(function(err) {
+	if(req.body.password!=req.body.confirm_password)
+	{
+		error = "Password field and Confirm password field do not match.";
+		res.redirect('/register');
+	}else{
+		user.save(function(err) {
 		if(err){
 			if(err.code == 11000)
 			{
@@ -156,6 +161,8 @@ app.post('/register', function(req,res) {
     		});
 		}
 	});
+	}
+	
 });
 
 app.get('/login', function(req,res) {
