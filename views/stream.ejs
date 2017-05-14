@@ -26,11 +26,7 @@
         <ul><%if(count==0) {%> <br> <li class="btn btn-default"><a style="font-size:20px;" class="btn btn-default" href="/announcement">  Write an announcement </a></li><%}%> </ul>
 <ul>
 <% for(var i = (count-1); i >= 0; i--) {%>
-   <a><%if(announcement[i].comment=="") {%>
-   <%- include("partials/post.ejs", {count: i}) %> <%}%> %></a>
-    <a> <%if(announcement[i].comment!="") {%>
-     <%- include("partials/comment.ejs", {i: i}) %> 
-     <%}%> %></a>
+     <%- include("partials/post.ejs", {i: i}) %> 
    <% } %>
 </ul>     
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

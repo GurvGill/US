@@ -28,7 +28,7 @@ var Announcement = mongoose.model('announcements', new Schema({
 	user: String,
 	job: String,
 	tag: String,
-	comment: String,
+	comment: Boolean,
 	date: Date,
 }));
 
@@ -66,6 +66,29 @@ app.use(session({
 	duration: 30 * 60 * 1000,
 	activeDuration: 5 * 60 * 1000,
 }));
+
+app.all ('*', function (req,res,next) {
+	Announcement.count(function(err, count)
+	{
+		if(err){}
+		global.c = count;
+	});
+	Announcement.find(function(err, announcement)
+	{
+		if(err){}
+		global.a = announcement;
+	});
+	Comment.count(function(err, count){
+		if(err){}
+		global.num = count;
+	});
+	Comment.find(function(err,comment){
+		if(err){}
+		global.com = comment;
+	});
+
+    next();
+});
 
 app.get('/', function (req, res) {
 	res.locals.error = error;
@@ -188,9 +211,20 @@ app.get('/profile', function(req,res) {
 					if(err){}
 					global.a = announcement;
 				});
+				Comment.count(function(err, count){
+					if(err){}
+					global.num = count;
+				});
+				Comment.find(function(err,comment){
+					if(err){}
+					global.com = comment;
+				});
+
 				res.locals.user = user;
-				res.locals.count = global.c;
 				res.locals.announcement = global.a;
+				res.locals.count = global.c;
+				res.locals.com = global.com;
+				res.locals.num = global.num;
 				res.render("profile");
 			}
 		});
@@ -310,7 +344,7 @@ app.post('/announcement', function(req,res){
 				email: user.email,
 				job: user.job,
 				tag: req.body.tag,
-				comment: "",
+				comment: false,
 				date: new Date,
 			});
 			announcement.save(function(err) {
@@ -414,35 +448,10 @@ app.post('/comment', function(req,res){
 						res.locals.error = "Try again!";
 						res.render("stream");
 					} else {
-						Announcement.update({_id: req.body.id}, {$set: {comment:"yes"}}, function(err, comment){
+						Announcement.update({_id: req.body.id}, {$set: {comment:true}}, function(err, comment){
 							if(err){}
 						});
-						Announcement.count(function(err, count)
-						{
-							if(err){}
-							global.c = count;
-						});
-						Announcement.find(function(err, announcement)
-						{
-							if(err){}
-							global.a = announcement;
-						});
-						Comment.count(function(err, count){
-							if(err)
-							global.num = count;
-						});
-						Comment.find(function(err,comment){
-							if(err){}
-							global.com = comment;
-						});
-
-						res.locals.user = user;
-						res.locals.announcement = global.a;
-						res.locals.count = global.c;
-						res.locals.com = global.com;
-						res.locals.num = global.num;
-						res.render("stream");
-						res.locals.error = '';
+						
 					}
 				});			
 			}
@@ -451,6 +460,38 @@ app.post('/comment', function(req,res){
 		res.locals.user = null;
 		error = "Please Sign in to comment on an announcement";
 		res.redirect('stream');
+	}
+});
+
+app.post('change_password', function(req,res){
+	res.locals.error = error;
+	if(req.session && req.session.user){
+		User.findOne( { email: req.session.user.email }, function(err, user){
+		if(!user){
+			req.session.reset();
+			res.locals.error = "Please Sign in";
+			res.redirect("/login");
+		} else {
+			res.locals.user = user;
+			if(req.body.pass == user.password){
+				res.locals.error = "Curent Password is not correct."
+				res.render("password");
+				res.locals.error = '';
+			}
+			if(req.body.pass != req.body.current_pass){
+				res.locals.error = "Password and Conform Password fields do not match."
+				res.render("password");
+				res.locals.error = '';
+			}
+			res.locals.error = "Password changed."
+			res.render("profile");
+			res.locals.error = '';
+		}
+	});
+	} else{
+		res.locals.user = null;
+		error = "Please Sign in";
+		res.render('/login');
 	}
 });
 app.listen(3000);

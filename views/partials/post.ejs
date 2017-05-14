@@ -1,6 +1,5 @@
-
 <div class="row main">
-        <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">  
+                <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12"> 
             <div class="panel panel-default">
                 <div class="panel-body">
                     <div class="pull-left">
@@ -8,8 +7,8 @@
                             <img class="media-object img-circle" src="https://lut.im/7JCpw12uUT/mY0Mb78SvSIcjvkf.png" width="50px" height="50px" style="margin-right:8px; margin-top:-5px;">
                         </a>
                     </div>
-                    <h4><a href="/profile" style="text-decoration:none;"><strong> 
-                    <div> <%= announcement[count].user %></div> </strong> <%= announcement[count].email %></strong></a> – <small><small><a style="text-decoration:none; color:grey;"><i><i class="fa fa-clock-o" aria-hidden="true"></i> <%= announcement[count].date %></i></a></small></small></h4>
+                    <h4><a href="#" style="text-decoration:none;"><strong> <div> 
+                    <%= announcement[i].user %></div> </strong> <%= announcement[i].email %></strong></a> – <small><small><a style="text-decoration:none; color:grey;"><i><i class="fa fa-clock-o" aria-hidden="true"></i> <%= announcement[i].date %></i></a></small></small></h4>
                     <span>
                         <div class="navbar-right">
                             <div class="dropdown">
@@ -19,40 +18,51 @@
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dd1" style="float: right;">
                                     <li><a href="#"><i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i> Report</a></li>
-                                    <li><a href="#"><i class="fa fa-fw fa-ban" aria-hidden="true"></i> Ignore</a></li>
-                                    <li><a href="#"><i class="fa fa-fw fa-bell" aria-hidden="true"></i> Enable notifications for this post</a></li>
-                                    <li><a href="#"><i class="fa fa-fw fa-eye-slash" aria-hidden="true"></i> Hide</a></li>
-                                    <li role="separator" class="divider"></li>
-                                    <li><a href="#"><i class="fa fa-fw fa-trash" aria-hidden="true"></i> Delete</a></li>
+                                    <li><a href="#"><i class="fa fa-heart" aria-hidden="true"></i> Like </a></li>
                                 </ul>
                             </div>
                         </div>
                     </span>
                     <hr>
                     <div class="post-content">
-                        <p> <%= announcement[count].announcement %> </p>
+                        <p> <%= announcement[i].announcement %> </p>
                     </div>
                     <hr>
                     <div>
                         <div class="pull-right btn-group-xs">
                             <a class="btn btn-default btn-xs"><i class="fa fa-heart" aria-hidden="true"></i> Like</a>
-                            <a class="btn btn-default btn-xs"><i class="fa fa-comment" aria-hidden="true"></i> Comment</a>
                         </div>
-                        <div class="pull-left">
-                            <p class="text-muted" style="margin-left:5px;"><i <i class="fa fa-tags" aria-hidden="true"></i> <%= announcement[count].job %> </p>
+                         <div class="pull-left">
+                            <p class="text-muted" style="margin-left:5px;"><i <i class="fa fa-tags" aria-hidden="true"></i> <%= announcement[i].job %> </p>
                         </div>
                         <br>
                     </div>
                     <hr>
+
+                    <%for(var j = 0; j <= (num-1); j++) {%>               
+                       <%if(com[j].announcement_id==announcement[i]._id) {%>
+                       <div class="post-content">
+                            <div class="panel-default">
+                                <div class="panel-body">
+                                    <h4><a href="#" style="text-decoration:none;"><strong>✪ <%= com[j].user %> ✪ ツ</strong></a></h4>
+                                    <hr> </div>
+                                    <div class="post-content">
+                                        <%= com[j].comment %>
+                                        <br><br><small><small><a href="#" style="text-decoration:none; color:grey;"><i><i class="fa fa-clock-o" aria-hidden="true"></i> <%= com[j].date %></i></a></small></small>
+                                    </div>
+                                </div>
+                        </div> <hr><%}%>
+                    <%}%>
+          
                     <div class="media">
                         <div class="pull-left">
                             <a href="#">
                                 <img class="media-object img-circle" src="https://lut.im/7JCpw12uUT/mY0Mb78SvSIcjvkf.png" width="35px" height="35px" style="margin-left:3px; margin-right:-5px;">
                             </a>
-                        </div>
+                            </div>
                         <form class="form-horizontal" method="post" action="/comment">
                         <div class="media-body">
-                             <input type="text" name="id" class='hidden' value=<%=announcement[count]._id %>>
+                             <input type="text" name="id" class='hidden' value=<%=announcement[i]._id %>>
                              <input type="text" class="form-control" rows="1" name="mess" placeholder="Comment"/>
                             <button type="login_button"  class="btn btn-default btn-xs" ><i class="fa fa-comment" aria-hidden="true" href="/comment"></i> Add Comment</button> </a>
                         </div>
@@ -60,5 +70,5 @@
                     </div>
                 </div>
             </div>
-        </div>
-</div>
+    </div></div>
+</div> 

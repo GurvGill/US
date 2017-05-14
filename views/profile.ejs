@@ -61,9 +61,8 @@
             
     <ul>
     <% for(var i = (count-1); i >= 0; i--) {%>
-       <a><%if(announcement[i].email == user.email && announcement[i].comment=="") 
-       {%><%- include("partials/profile_post.ejs", {count: i}) %> <%}%> %></a>
-        <a> <%if(announcement[i].email != user.email && announcement[i].comment!="") {%><%- include("partials/profile_comment.ejs", {count: i}) %> <%}%> %></a>
+       <a><%if(announcement[i].email == user.email) 
+       {%><%- include("partials/profile_post.ejs", {i: i}) %> <%}%> %></a>
        <% } %>
     </ul>   
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
