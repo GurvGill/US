@@ -26,6 +26,7 @@ var Announcement = mongoose.model('announcements', new Schema({
 	announcement: String,
 	email: String,
 	user: String,
+	company: String,
 	job: String,
 	tag: String,
 	comment: Boolean,
@@ -124,9 +125,9 @@ app.post('/register', function(req,res) {
 		username: req.body.username,
 		email: req.body.email,
 		password: req.body.password,
-		phone: "",
-		bio: "",
-		birthday: "",
+		phone: "(xxx)-xxx-xxxx",
+		bio: "No Bio entered",
+		birthday: "xx/xx/xxxx",
 		picture: "./public/images/6.jpg",
 	});
 	user.save(function(err) {
@@ -251,6 +252,33 @@ app.get('/edit_profile', function(req,res){
 			res.locals.error = "Please Sign in to edit profile.";
 			res.redirect("/login");
 		} else {
+			res.locals.user = user;
+			res.render('edit_profile');
+			res.locals.error = '';
+		}
+	});
+	} else{
+		res.locals.user = null;
+		error = "Please Sign in to edit profile.";
+		res.redirect('/login');
+	}
+});
+app.post('/edit_profile', function(req,res){
+	res.locals.error = error;
+	if(req.session && req.session.user){
+		User.findOne( { email: req.session.user.email }, function(err, user){
+		if(!user){
+			req.session.reset();
+			res.locals.error = "Please Sign in to edit profile.";
+			res.redirect("/login");
+		} else {
+			User.update({_id: user._id},{$set: {bio: req.body.bio, username: req.body.username, company: req.body.company, email: req.body.email, phone: req.body.phone, birthday: req.body.birthday}}, function(err, bio){
+				if(err){}
+					console.log(req.body.bio);
+			});
+			Announcement.update({_id: req.body.id}, {$set: {comment:true}}, function(err, comment){
+				if(err){}
+			});
 			Announcement.count(function(err, count)
 			{
 				if(err){}
@@ -264,8 +292,8 @@ app.get('/edit_profile', function(req,res){
 			res.locals.user = user;
 			res.locals.count = global.c;
 			res.locals.announcement = global.a;
-			res.render('edit_profile');
-			res.locals.error = '';
+			res.locals.error = 'Profile edited.';
+			res.redirect('/profile');
 		}
 	});
 	} else{
@@ -290,7 +318,7 @@ app.get('/password', function(req, res){
 				global.c = count;
 			});
 			Announcement.find(function(err, announcement)
-			{
+			{ 
 				if(err){}
 				global.a = announcement;
 			});
@@ -482,6 +510,7 @@ app.post('/comment', function(req,res){
 					email: user.email,
 					user: user.username,
 					job: user.job,
+					company: user.company,
 					comment: req.body.mess,
 					announcement_id: req.body.id,
 					date: new Date,

@@ -35,47 +35,47 @@
         </div>
         <h3>Personal info</h3>
         
-        <form class="form-horizontal" role="form">
+        <form class="form-horizontal" method="post" action="/edit_profile">
           <div class="form-group">
             <label class="col-lg-3 control-label">Bio:</label>
             <div class="col-lg-8">
-              <input class="form-control" rows="3" type="text" value=<%=user.bio%>>
+              <input class="form-control" rows="3" type="text" name="bio" value=<%=user.bio%>>
             </div>
           </div>
           <div class="form-group">
             <label class="col-lg-3 control-label">Username:</label>
             <div class="col-lg-8">
-              <input class="form-control" type="text" value=<%=user.username%>>
+              <input class="form-control" type="text" name="username" value=<%=user.username%>>
             </div>
           </div>
           <div class="form-group">
             <label class="col-lg-3 control-label">Company:</label>
             <div class="col-lg-8">
-              <input class="form-control" type="text" value=<%=user.company%>>
+              <input class="form-control" type="text" name="company"value=<%=user.company%>>
             </div>
           </div>
           <div class="form-group">
             <label class="col-lg-3 control-label">Email:</label>
             <div class="col-lg-8">
-              <input class="form-control" type="text" value=<%=user.email%>>
+              <input class="form-control" type="text" name="email" value=<%=user.email%>>
             </div>
           </div>
           <div class="form-group">
             <label class="col-lg-3 control-label">Phone:</label>
             <div class="col-lg-8">
-              <input class="form-control" type="text" value=<%=user.phone%>>
+              <input class="form-control" type="text" name="phone" value=<%=user.phone%>>
             </div>
           </div>
           <div class="form-group">
             <label class="col-lg-3 control-label">Birthday:</label>
             <div class="col-lg-8">
-              <input class="form-control" type="text" value=<%=user.birthday%>>
+              <input class="form-control" type="text" name="birthday" value=<%=user.birthday%>>
             </div>
           </div>
           <div class="form-group">
             <label class="col-md-3 control-label"></label>
             <div class="col-md-8">
-              <input type="button" class="btn btn-primary" value="Save Changes">
+              <button type="submit" class="btn btn-primary" href="/edit_profile">Save Changes</button>
               <input type="reset" class="btn btn-primary" value="Cancel">
             </div>
           </div>
