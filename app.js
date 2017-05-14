@@ -453,7 +453,33 @@ app.post('/comment', function(req,res){
 						});
 						
 					}
-				});			
+				});	
+				Announcement.count(function(err, count)
+						{
+							if(err){}
+							global.c = count;
+						});
+						Announcement.find(function(err, announcement)
+						{
+							if(err){}
+							global.a = announcement;
+						});
+						Comment.count(function(err, count){
+							if(err)
+							global.num = count;
+						});
+						Comment.find(function(err,comment){
+							if(err){}
+							global.com = comment;
+						});
+						console.log(num);
+						res.locals.user = user;
+						res.locals.announcement = global.a;
+						res.locals.count = global.c;
+						res.locals.com = global.com;
+						res.locals.num = global.num;
+						res.render("stream");
+						res.locals.error = '';		
 			}
 		});
 	} else{
