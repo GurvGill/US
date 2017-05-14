@@ -281,7 +281,6 @@ app.post('/edit_profile', function(req,res){
 		} else {
 			User.update({_id: user._id},{$set: {bio: req.body.bio, username: req.body.username, company: req.body.company, email: req.body.email, phone: req.body.phone, birthday: req.body.birthday}}, function(err, bio){
 				if(err){}
-					console.log(req.body.bio);
 			});
 			Announcement.update({_id: req.body.id}, {$set: {comment:true}}, function(err, comment){
 				if(err){}
@@ -568,7 +567,27 @@ app.post('/comment', function(req,res){
 	}
 });
 
-app.post('change_password', function(req,res){
+app.get('/change_password', function(err,res){
+	res.locals.error = error;
+	if(req.session && req.session.user){
+		User.findOne( { email: req.session.user.email }, function(err, user){
+		if(!user){
+			req.session.reset();
+			res.redirect("/login");
+		} else {
+			res.locals.user = user;
+			res.render('password');
+			error = '';
+		}
+	});
+	} else{
+		res.locals.user = null;
+		res.redirect('/index');
+		error = '';
+	}
+})
+
+app.post('/change_password', function(req,res){
 	res.locals.error = error;
 	if(req.session && req.session.user){
 		User.findOne( { email: req.session.user.email }, function(err, user){
@@ -578,19 +597,24 @@ app.post('change_password', function(req,res){
 			res.redirect("/login");
 		} else {
 			res.locals.user = user;
-			if(req.body.pass == user.password){
-				res.locals.error = "Curent Password is not correct."
+			if(req.body.current_pass != user.password){
+				res.locals.error = "Current Password is not correct."
 				res.render("password");
 				res.locals.error = '';
 			}
-			if(req.body.pass != req.body.current_pass){
-				res.locals.error = "Password and Conform Password fields do not match."
+			if(req.body.pass != req.body.con_pass){
+				res.locals.error = "Password field and Confirm Password field do not match."
 				res.render("password");
 				res.locals.error = '';
 			}
-			res.locals.error = "Password changed."
-			res.render("profile");
-			res.locals.error = '';
+			User.update({_id: user._id}, {$set: {password: req.body.pass}},function(err,argument) {
+				if(err){}
+				
+				res.locals.error = "Password changed."
+				res.render("password");
+				res.locals.error = '';
+			});
+			
 		}
 	});
 	} else{
