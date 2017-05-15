@@ -377,6 +377,7 @@ app.post('/announcement', function(req,res){
 				announcement: req.body.announcement,
 				user: user.username,
 				email: user.email,
+				company: user.company,
 				job: user.job,
 				tag: req.body.tag,
 				comment: false,
@@ -585,7 +586,7 @@ app.get('/change_password', function(err,res){
 		res.redirect('/index');
 		error = '';
 	}
-})
+});
 
 app.post('/change_password', function(req,res){
 	res.locals.error = error;
@@ -623,4 +624,9 @@ app.post('/change_password', function(req,res){
 		res.redirect('/login');
 	}
 });
+
+app.get('/chat', function(req,res){
+	res.render('chat');
+})
+
 app.listen(3000);

@@ -22,12 +22,21 @@
                 </div>
             </div>
         </h1>
+        <% for(var i = (count-1); i >= 0; i--) {%>
+            <%if(announcement[i].company==user.company) {%>
+            <% } %>
+          <%if(announcement[i].company!=user.company) {%>
+            <%= count=0 %>
+            <% } %>
+        <% } %>
         <h1><%if(count==0) {%> <div style="margin-left: 40px;"> <p>  There are no Announcements! </p> </div><%}%> </h1>
-        <ul><%if(count==0) {%> <br> <li class="btn btn-default"><a style="font-size:20px;" class="btn btn-default" href="/announcement">  Write an announcement </a></li><%}%> </ul>
+        <ul><%if(count==0) {%> <br> <li class="btn btn-default"><a style="font-size:20px;" class="btn btn-default" href="/announcement">  Post an announcement </a></li><%}%> </ul>
 <ul>
 <% for(var i = (count-1); i >= 0; i--) {%>
-     <%- include("partials/post.ejs", {i: i}) %> 
-   <% } %>
+    <%if(announcement[i].company==user.company) {%>  
+        <%- include("partials/post.ejs", {i: i}) %> 
+    <% } %>
+<% } %>
 </ul>     
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="javascripts/jquery-2.1.1.min.js"></script>

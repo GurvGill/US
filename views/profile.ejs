@@ -66,9 +66,9 @@
          
                 <ul>
                 <% for(var i = (count-1); i >= 0; i--) {%>
-                <div class="col-lg-9  col-xs-12">
+                <div class="col-lg-9  col-xs-12" style="margin-left: 15px;">
                    <a><%if(announcement[i].email == user.email) 
-                   {%><%- include("partials/profile_post.ejs", {i: i, count: count}) %> <%}%> %></a>
+                   {%><%- include("partials/profile_post.ejs", {i: i}) %> <%}%> %></a>
                    <% } %>
                    </div>
                 </ul>   
