@@ -43,6 +43,17 @@ var Comment = mongoose.model('comments', new Schema({
 	date: Date,
 }));
 
+var Message = mongoose.model('messages', new Schema({
+	email: String,
+	user: String,
+	job: String,
+	company: String,
+	message: String,
+	picture: Buffer,
+	date: Date,
+}));
+
+
 
 var app = express();
 app.set('view engine', 'ejs');
@@ -86,6 +97,14 @@ app.all ('*', function (req,res,next) {
 	Comment.find(function(err,comment){
 		if(err){}
 		global.com = comment;
+	});
+	Message.count(function(err, count){
+		if(err){}
+		global.numb = count;
+	});
+	Message.find(function(err,comment){
+		if(err){}
+		global.mess = comment;
 	});
 
     next();
@@ -162,7 +181,6 @@ app.post('/register', function(req,res) {
 		}
 	});
 	}
-	
 });
 
 app.get('/login', function(req,res) {
@@ -210,12 +228,13 @@ app.get('/profile', function(req,res) {
 				req.session.reset();
 				res.redirect("/login");
 			} else {
+				res.locals.user = user;
 				Announcement.count(function(err, count)
 				{
 					if(err){}
 					global.c = count;
 				});
-				Announcement.find(function(err, announcement)
+				Announcement.find({email: req.session.user.email},function(err, announcement)
 				{
 					if(err){}
 					global.a = announcement;
@@ -228,8 +247,7 @@ app.get('/profile', function(req,res) {
 					if(err){}
 					global.com = comment;
 				});
-
-				res.locals.user = user;
+				
 				res.locals.announcement = global.a;
 				res.locals.count = global.c;
 				res.locals.com = global.com;
@@ -615,7 +633,6 @@ app.post('/change_password', function(req,res){
 				res.render("password");
 				res.locals.error = '';
 			});
-			
 		}
 	});
 	} else{
@@ -625,8 +642,149 @@ app.post('/change_password', function(req,res){
 	}
 });
 
-app.get('/chat', function(req,res){
-	res.render('chat');
-})
+app.get('/company_stream', function(req,res){
+	res.locals.error = error;
+	if(req.session && req.session.user){
+		User.findOne( { email: req.session.user.email }, function(err, user){
+			if(!user){
+				req.session.reset();
+				res.locals.error = "Please Sign in. Company Stream is private access for Users only";
+				res.redirect("/login");
+			} else {
+				Announcement.count(function(err, count)
+				{
+					if(err){}
+					global.c = count;
+				});
+				Announcement.find(function(err, announcement)
+				{
+					if(err){}
+					global.a = announcement;
+				});
+				Comment.count(function(err, count){
+					if(err){}
+					global.num = count;
+				});
+				Comment.find(function(err,comment){
+					if(err){}
+					global.com = comment;
+				});
+
+				res.locals.user = user;
+				res.locals.announcement = global.a;
+				res.locals.count = global.c;
+				res.locals.com = global.com;
+				res.locals.num = global.num;
+				res.render("company_stream");
+				res.locals.error = '';
+			}
+		});
+	} else{
+		res.locals.user = null;
+		error = "Please Sign in. Company Stream is private access for Users only.";
+		res.redirect("/login");
+	}
+});
+
+app.get('/company_chat', function(req,res){
+	res.locals.error = error;
+	if(req.session && req.session.user){
+		User.findOne( { email: req.session.user.email }, function(err, user){
+			if(!user){
+				req.session.reset();
+				res.locals.error = "Please Sign in. Company Chat is private access for Users only";
+				res.redirect("/login");
+			} else {	
+				res.locals.user = user;
+				Message.count(function(err, count){
+					if(err){}
+					global.numb = count;
+				});
+				Message.find(function(err,comment){
+					if(err){}
+					global.mess = comment;
+				});
+				
+				res.locals.count = global.numb;
+				res.locals.message = global.mess;
+				res.redirect("/company_chat2");
+				res.locals.error = '';
+			}
+		});
+	} else{
+		res.locals.user = null;
+		error = "Please Sign in. Company Chat is private access for Users only.";
+		res.redirect("/login");
+	}
+});
+app.get('/company_chat2', function(req,res){
+	res.locals.error = error;
+	if(req.session && req.session.user){
+		User.findOne( { email: req.session.user.email }, function(err, user){
+			if(!user){
+				req.session.reset();
+				res.locals.error = "Please Sign in. Company Chat is private access for Users only";
+				res.redirect("/login");
+			} else {	
+				res.locals.user = user;
+				Message.count(function(err, count){
+					if(err){}
+					global.numb = count;
+				});
+				Message.find(function(err,comment){
+					if(err){}
+					global.mess = comment;
+				});
+				
+				res.locals.count = global.numb;
+				res.locals.message = global.mess;
+				res.render("company_chat");
+				res.locals.error = '';
+			}
+		});
+	} else{
+		res.locals.user = null;
+		error = "Please Sign in. Company Chat is private access for Users only.";
+		res.redirect("/login");
+	}
+});
+
+app.post('/add_message', function(req,res){
+	res.locals.error = error;
+	if(req.session && req.session.user){
+		User.findOne( { email: req.session.user.email }, function(err, user){
+			if(!user){
+				req.session.reset();
+				res.locals.error = "Please Sign in. Company Chat is private access for Users only";
+				res.redirect("/login");
+			} else {
+				var message = new Message({
+					email: user.email,
+					user: user.username,
+					job: user.job,
+					company: user.company,
+					message: req.body.mess,
+					picture: user.picture,
+					date: new Date,
+				});
+				message.save(function(err) {
+					if(err)
+					{
+						res.locals.error = "Try again!";
+						res.render("company_chat");
+					} else {
+						
+					}
+				});		
+			}
+			res.redirect("/company_chat");
+			res.locals.error = '';
+		});
+	} else{
+		res.locals.user = null;
+		error = "Please Sign in. Company Chat is private access for Users only.";
+		res.redirect("/login");
+	}
+});
 
 app.listen(3000);

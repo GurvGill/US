@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+<head>
+    <link href="stylesheets/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="stylesheets/font-awesome.min.css">
+    <link rel="stylesheet" href="stylesheets/jquery.bxslider.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/isotope.css" media="screen" />
+    <link rel="stylesheet" href="stylesheets/animate.css">
+    <link rel="stylesheet" href="javascripts/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+    <link href="stylesheets/prettyPhoto.css" rel="stylesheet" />
+    <link href="stylesheets/chat.css" rel="stylesheet"/>
+
+    <link rel="stylesheet" href="stylesheets/font-awesome.min.css"/>
+    <link rel="stylesheet" href="stylesheets/bootstrap.min.css"/>
+</head>
+<body>
+<header>
+    <%- include('partials/navbar.ejs', {active: "usermenu"}); %>
+     <%if(error!="") {%> <div class= "alert alert-danger" <strong> <%= error %> </strong> </div> <%}%>
+</header>
+<div class="container-fluid" style="margin-left: 125px;">  
+        <div class="col-md-11 current-chat">
+            <div class="row chat-toolbar-row">
+                <div class="col-sm-12">
+                    <div class="btn-group chat-toolbar" role="group" aria-label="...">
+                        <button id="chat-leave" class="btn btn-default ticket-option" type="button">
+                          <i class="glyphicon glyphicon-remove-sign"></i> Leave Chat
+                        </button>
+                        <button id="chat-invite" class="btn btn-default ticket-option" type="button">
+                          <i class="glyphicon glyphicon-plus"></i> Invite
+                        </button>
+                        <button id="chat-customer" class="btn btn-default ticket-option" type="button">
+                          <i class="glyphicon glyphicon-user"></i> Open Customer
+                        </button>
+                        <button id="chat-create-ticket" class="btn btn-default ticket-option" type="button">
+                          <i class="glyphicon glyphicon-pencil"></i> Create Ticket
+                        </button>
+                        <button id="chat-add-ticket" class="btn btn-default ticket-option" type="button">
+                          <i class="glyphicon glyphicon-plus"></i> Add to Ticket
+                        </button>
+                        <button id="chat-open-ticket" class="btn btn-default ticket-option" type="button">
+                          <i class="glyphicon glyphicon-open"></i> Open Ticket
+                        </button>
+                    </div>
+                </div>
+            </div>
+             
+           <div class="row current-chat-area" style="margin-top: 30px;">         
+            <%for(var i=0;i<=count-1;i++) {%> 
+            <% var user1 = user.email%>
+         <%if(user1 == user.email) {%>
+          <div class="col-md-12">                       
+                     <ul class="media-list">
+                            <li class="media">
+                                <div class="media-body">
+                                    <div class="media">
+                                        <a class="pull-left" style="margin-left: 100px;" href="#">
+                                            <img class="media-object img-circle " src="https://app.teamsupport.com/dc/1078/UserAvatar/1839999/48/1470773165634">
+                                        </a>
+                                        <div class="pull-left">
+                                            <%= message[i].message %>
+                                            <br>
+                                           <small class="text-muted"><%= user.username %> | <%= message[i].date%></small>
+                                            <hr>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>  
+                   </ul>  
+          </div>  
+          <%}%>
+          <%if(user1 != user.email) {%>
+          <div class="col-md-12">                       
+                     <ul class="media-list">
+                            <li class="media">
+                                <div class="media-body">
+                                    <div class="media">
+                                        <a class="pull-right" style="margin-right: 100px; " href="#">
+                                            <img class="media-object img-circle " src="https://app.teamsupport.com/dc/1078/UserAvatar/1839999/48/1470773165634">
+                                        </a>
+                                        <div class="pull-right">
+                                            <%= message[i].message %>
+                                            <br>
+                                           <small class="text-muted"><%= user.username %> | <%= message[i].date%></small>
+                                            <hr>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>  
+                   </ul>  
+          </div> 
+          <%}%>    
+         <%}%> 
+        </div>
+        <form class="form-group" method="post" action="/add_message">
+            <div class="row current-chat-footer">
+            <div class="panel-footer" style="margin-right: 15px;">
+                <div class="input-group">
+                  <input type="text" name="mess" class="form-control">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit" href="/add_message">Send</button>
+                  </span>
+                </div>
+                </div>
+            </div></form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

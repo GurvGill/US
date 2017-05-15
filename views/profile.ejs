@@ -49,14 +49,12 @@
                     <i class="fa fa-tags" aria-hidden="true"></i> <a href="/tags/" class="tag">#<%= user.company %> </a> <a href="/tags/" class="tag">#<%= user.job %></a> 
                     <br><br><hr>
                     <span class="pull-left">
-                        <a href="/announcement" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-fw fa-files-o" aria-hidden="true"></i> Post Announcement</a>
+                        <a href="/announcement" class="btn btn-link" style="text-decoration:none;"><i class="glyphicon glyphicon-pencil" aria-hidden="true"></i> Post Announcement</a>
                         <a href="/photos" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-fw fa-picture-o" aria-hidden="true"></i> Photos <span class="badge">2</span></a>
                         <a href="#" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-fw fa-users" aria-hidden="true"></i> Contacts <span class="badge">1</span></a>
                     </span>
                     <span class="pull-right">
-                        <a href="#" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-lg fa-at" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Mention"></i></a>
                         <a href="#" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-lg fa-envelope-o" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="error"></i></a>
-                        <a href="#" class="btn btn-link" style="text-decoration:none;"><i class="fa fa-lg fa-ban" aria-hidden="true" data-toggle="tooltip" data-placement="bottom" title="Ignore"></i></a>
                     </span>
                 </div>
             </div>
@@ -66,7 +64,7 @@
          
                 <ul>
                 <% for(var i = (count-1); i >= 0; i--) {%>
-                <div class="col-lg-9  col-xs-12" style="margin-left: 15px;">
+                <div class="col-lg-9 col-xs-12 pull-right" style="margin-right: 15px;">
                    <a><%if(announcement[i].email == user.email) 
                    {%><%- include("partials/profile_post.ejs", {i: i}) %> <%}%> %></a>
                    <% } %>
