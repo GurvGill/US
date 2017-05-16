@@ -1,0 +1,102 @@
+<head>
+    <link href="stylesheets/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="stylesheets/font-awesome.min.css">
+    <link rel="stylesheet" href="stylesheets/jquery.bxslider.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/isotope.css" media="screen" />
+    <link rel="stylesheet" href="stylesheets/animate.css">
+    <link rel="stylesheet" href="javascripts/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+    <link href="stylesheets/prettyPhoto.css" rel="stylesheet" />
+    <link href="stylesheets/chat.css" rel="stylesheet"/>
+    <link href="stylesheets/style.css" rel="stylesheet"/>
+
+    <link rel="stylesheet" href="stylesheets/font-awesome.min.css"/>
+    <link rel="stylesheet" href="stylesheets/bootstrap.min.css"/>
+</head>
+<body>
+<header>
+    <%- include('partials/navbar.ejs', {active: "usermenu"}); %>
+     <%if(error!="") {%> <div class= "alert alert-danger" <strong> <%= error %> </strong> </div> <%}%>
+</header>
+<div>
+    <div class="panel-heading">
+        <div class="panel-title text-left ">
+            <h3 class="title" style="margin-left: 170px;"> <%= user.company %> chat </h3>
+            <hr />
+        </div>
+    </div>
+</div>
+<div class="container-fluid" style="margin-top: -10px;margin-left: 165px;margin-right: 135px;">  
+        <div class="col-md-11 current-chat">
+            <div class="row chat-toolbar-row">
+                <div class="col-sm-12">
+                    <div class="btn-group chat-toolbar" role="group" aria-label="...">
+                        <button id="chat-leave" class="btn btn-default ticket-option" type="button">
+                          <i class="glyphicon glyphicon-remove-sign"></i> Leave Chat
+                        </button>
+                    </div>
+                </div>
+            </div>
+             
+           <div  class="row current-chat-area" id="content">         
+            <%for(var i=0;i<=count-1;i++) {%>  
+            <%if(message[i].company == user.company) {%> 
+                 <%if(message[i].email == user.email) {%>
+                  <div class="col-md-12">                
+                         <ul class="media-list">
+                            <li class="media">
+                                <div class="media-body">
+                                    <div class="media">
+                                        <a class="pull-left" style="margin-left: 100px;" href="#">
+                                            <img class="media-object img-circle " src="https://app.teamsupport.com/dc/1078/UserAvatar/1839999/48/1470773165634">
+                                        </a>
+                                        <div class="pull-left">
+                                            <%= message[i].message %>
+                                            <br>
+                                           <small class="text-muted"><%= message[i].user %> | <%= message[i].date%></small>
+                                            <hr>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>  
+                       </ul>  
+                  </div>  
+                  <%}%>
+                  <%if(message[i].email != user.email) {%>
+                      <div class="col-md-12">                       
+                         <ul class="media-list">
+                            <li class="media">
+                                <div class="media-body">
+                                    <div class="media">
+                                        <a class="pull-right" style="margin-right: 100px; " href="#">
+                                            <img class="media-object img-circle " src="https://app.teamsupport.com/dc/1078/UserAvatar/1839999/48/1470773165634">
+                                        </a>
+                                        <div class="pull-right">
+                                            <%= message[i].message %>
+                                            <br>
+                                           <small class="text-muted"><%= message[i].user %> | <%= message[i].date%></small>
+                                            <hr>
+                                        </div>
+                                    </div>
+                                </div>
+                           </li>  
+                       </ul> 
+                      </div> 
+                  <%}%>    
+                <%}%> 
+            <%}%>
+        </div>
+        <form class="form-group" method="post" action="/add_message">
+            <div class="row current-chat-footer">
+            <div class="panel-footer" style="margin-right: 15px;">
+                <div class="input-group">
+                <p id="name"><%user.username%></p>
+                  <input type="text" id="mess" name="mess" class="form-control">
+                  <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit" value="send" href="/add_message">Send</button>
+                  </span>
+                </div>
+                </div>
+            </div></form>
+        </div>
+    </div>
+</div>

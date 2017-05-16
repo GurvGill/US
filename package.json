@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "socket.io": "2.0.1",
     "client-sessions": "^0.8.0",
     "mongoose": "^4.9.8"
   }

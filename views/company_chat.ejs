@@ -1,6 +1,10 @@
 <!doctype html>
 <html>
-<head>
+
+<!doctype html>
+<html>
+  <head>
+    <title><%=user.company%> chat</title>
     <link href="stylesheets/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="stylesheets/font-awesome.min.css">
     <link rel="stylesheet" href="stylesheets/jquery.bxslider.css">
@@ -9,6 +13,7 @@
     <link rel="stylesheet" href="javascripts/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
     <link href="stylesheets/prettyPhoto.css" rel="stylesheet" />
     <link href="stylesheets/chat.css" rel="stylesheet"/>
+    <link href="stylesheets/style.css" rel="stylesheet"/>
 
     <link rel="stylesheet" href="stylesheets/font-awesome.min.css"/>
     <link rel="stylesheet" href="stylesheets/bootstrap.min.css"/>
@@ -18,86 +23,93 @@
     <%- include('partials/navbar.ejs', {active: "usermenu"}); %>
      <%if(error!="") {%> <div class= "alert alert-danger" <strong> <%= error %> </strong> </div> <%}%>
 </header>
-<div class="container-fluid" style="margin-left: 125px;">  
-        <div class="col-md-11 current-chat">
+<div>
+    <div class="panel-heading">
+        <div class="panel-title text-left ">
+            <h3 class="title" style="margin-left: 170px;"> <%= user.company %> chat </h3>
+            <hr />
+        </div>
+    </div>
+</div>
+<div class="container-fluid" style="margin-top: -100px;"> 
+    <div class="row" style="margin-top: 100px;">
+
+        <div class="col-md-3">
+             <div class="row chats-row">
+                <div class="col-sm-12">
+                        <h2 id="messages"></h2>             
+                </div>
+             </div>
+        </div>
+
+<div class="col-md-9 current-chat">
             <div class="row chat-toolbar-row">
                 <div class="col-sm-12">
                     <div class="btn-group chat-toolbar" role="group" aria-label="...">
-                        <button id="chat-leave" class="btn btn-default ticket-option" type="button">
-                          <i class="glyphicon glyphicon-remove-sign"></i> Leave Chat
-                        </button>
-                        <button id="chat-invite" class="btn btn-default ticket-option" type="button">
-                          <i class="glyphicon glyphicon-plus"></i> Invite
-                        </button>
-                        <button id="chat-customer" class="btn btn-default ticket-option" type="button">
-                          <i class="glyphicon glyphicon-user"></i> Open Customer
-                        </button>
-                        <button id="chat-create-ticket" class="btn btn-default ticket-option" type="button">
-                          <i class="glyphicon glyphicon-pencil"></i> Create Ticket
-                        </button>
-                        <button id="chat-add-ticket" class="btn btn-default ticket-option" type="button">
-                          <i class="glyphicon glyphicon-plus"></i> Add to Ticket
-                        </button>
-                        <button id="chat-open-ticket" class="btn btn-default ticket-option" type="button">
-                          <i class="glyphicon glyphicon-open"></i> Open Ticket
-                        </button>
+                        <a id="chat-leave" class="btn btn-default ticket-option">
+                          Leave Chat:
+                        </a>
                     </div>
                 </div>
             </div>
-             
-           <div class="row current-chat-area" style="margin-top: 30px;">         
-            <%for(var i=0;i<=count-1;i++) {%> 
-         <%if(message[i].email == user.email) {%>
-          <div class="col-md-12">                       
-                 <ul class="media-list">
-                    <li class="media">
-                        <div class="media-body">
-                            <div class="media">
-                                <a class="pull-left" style="margin-left: 100px;" href="#">
-                                    <img class="media-object img-circle " src="https://app.teamsupport.com/dc/1078/UserAvatar/1839999/48/1470773165634">
-                                </a>
-                                <div class="pull-left">
-                                    <%= message[i].message %>
-                                    <br>
-                                   <small class="text-muted"><%= message.user %> | <%= message[i].date%></small>
-                                    <hr>
+    <div class="row current-chat-area" id="content">         
+            <%for(var i=0;i<=count-1;i++) {%>  
+            <%if(message[i].company == user.company) {%> 
+                 <%if(message[i].email == user.email) {%>
+                  <div class="col-md-12">                
+                         <ul class="media-list">
+                            <li class="media">
+                                <div class="media-body">
+                                    <div class="media">
+                                        <a class="pull-left" style="margin-left: 100px;" href="#">
+                                            <img class="media-object img-circle " src="https://app.teamsupport.com/dc/1078/UserAvatar/1839999/48/1470773165634">
+                                        </a>
+                                        <div class="pull-left">
+                                            <%= message[i].message %>
+                                            <br>
+                                           <small class="text-muted"><%= message[i].user %> | <%= message[i].date%></small>
+                                            <hr>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </li>  
-               </ul>  
-          </div>  
-          <%}%>
-          <%if(message[i].email != user.email) {%>
-              <div class="col-md-12">                       
-                 <ul class="media-list">
-                    <li class="media">
-                        <div class="media-body">
-                            <div class="media">
-                                <a class="pull-right" style="margin-right: 100px; " href="#">
-                                    <img class="media-object img-circle " src="https://app.teamsupport.com/dc/1078/UserAvatar/1839999/48/1470773165634">
-                                </a>
-                                <div class="pull-right">
-                                    <%= message[i].message %>
-                                    <br>
-                                   <small class="text-muted"><%= message.user %> | <%= message[i].date%></small>
-                                    <hr>
+                            </li>  
+                       </ul>  
+                  </div>  
+                  <%}%>
+                  <%if(message[i].email != user.email) {%>
+                      <div class="col-md-12">                       
+                         <ul class="media-list">
+                            <li class="media">
+                                <div class="media-body">
+                                    <div class="media">
+                                        <a class="pull-right" style="margin-right: 100px; " href="#">
+                                            <img class="media-object img-circle " src="https://app.teamsupport.com/dc/1078/UserAvatar/1839999/48/1470773165634">
+                                        </a>
+                                        <div class="pull-right">
+                                            <%= message[i].message %>
+                                            <br>
+                                           <small class="text-muted"><%= message[i].user %> | <%= message[i].date%></small>
+                                            <hr>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                   </li>  
-               </ul> 
-              </div> 
-          <%}%>    
-         <%}%> 
-        </div>
+                           </li>  
+                       </ul> 
+                      </div> 
+                  <%}%>    
+                <%}%> 
+            <%}%>
+        </div> 
+            
+
         <form class="form-group" method="post" action="/add_message">
             <div class="row current-chat-footer">
             <div class="panel-footer" style="margin-right: 15px;">
                 <div class="input-group">
-                  <input type="text" name="mess" class="form-control">
+                <input id="name" type="hidden" value=<%=user.username%>-></input>
+                  <input type="text" id="m" name="message" class="form-control"></input>
                   <span class="input-group-btn">
-                    <button class="btn btn-default" type="submit" href="/add_message">Send</button>
+                    <button class="btn btn-default" style="margin-top: -1px;" type="submit" href="/add_message">Send</button>
                   </span>
                 </div>
                 </div>
@@ -105,5 +117,37 @@
         </div>
     </div>
 </div>
+  <body>
+<script src="/socket.io/socket.io.js"></script>
+<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+   
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="javascripts/jquery-2.1.1.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="javascripts/bootstrap1.min.js"></script>
+<script src="javascripts/wow.min.js"></script>
+<script src="javascripts/fancybox/jquery.fancybox.pack.js"></script>
+<script src="javascripts/jquery.easing.1.3.js"></script>
+<script src="javascripts/jquery.bxslider.min.js"></script>
+<script src="javascripts/jquery.prettyPhoto.js"></script>
+<script src="javascripts/jquery.isotope.min.js"></script>
+<script src="javascripts/functions.js"></script>
+<script>wow = new WOW({}).init();</script>
+<script>
+    $(function (m){
+        var socket = io();
+        $('form').submit(function(){
+            socket.emit('chat message', $('#m').val());
+            $('#m').val();
+            app.post('/add_message');
+            return false;
+        });
+
+        socket.on('chat message',function(msg){
+            $('#messages').text(msg); 
+            global.msg = msg;
+        });
+    });
+</script>
 </body>
 </html>

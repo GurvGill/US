@@ -53,6 +53,16 @@ var Message = mongoose.model('messages', new Schema({
 	date: Date,
 }));
 
+var Chat = mongoose.model('chats', new Schema({
+	email: String,
+	user: String,
+	job: String,
+	company: String,
+	message: String,
+	picture: Buffer,
+	date: Date,
+}));
+
 
 
 var app = express();
@@ -97,6 +107,14 @@ app.all ('*', function (req,res,next) {
 	Comment.find(function(err,comment){
 		if(err){}
 		global.com = comment;
+	});
+	Chat.count(function(err, count){
+		if(err){}
+		global.number = count;
+	});
+	Chat.find(function(err,comment){
+		if(err){}
+		global.message = comment;
 	});
 	Message.count(function(err, count){
 		if(err){}
@@ -145,7 +163,7 @@ app.post('/register', function(req,res) {
 		email: req.body.email,
 		password: req.body.password,
 		phone: "(xxx)-xxx-xxxx",
-		bio: "No Bio entered",
+		bio: "No Bio",
 		birthday: "xx/xx/xxxx",
 		picture: "./public/images/6.jpg",
 	});
@@ -704,7 +722,8 @@ app.get('/company_chat', function(req,res){
 					if(err){}
 					global.mess = comment;
 				});
-				
+				global.user = user;
+				global.req = req;
 				res.locals.count = global.numb;
 				res.locals.message = global.mess;
 				res.redirect("/company_chat2");
@@ -763,7 +782,7 @@ app.post('/add_message', function(req,res){
 					user: user.username,
 					job: user.job,
 					company: user.company,
-					message: req.body.mess,
+					message: req.body.message,
 					picture: user.picture,
 					date: new Date,
 				});
@@ -787,4 +806,12 @@ app.post('/add_message', function(req,res){
 	}
 });
 
-app.listen(3000);
+var io = require('socket.io').listen(app.listen(3000));
+
+io.on('connection', function (socket) {
+    socket.emit('message', { message: 'welcome to the chat' });
+    socket.on('chat message', function (msg) {
+       	io.emit('chat message', msg);
+  
+	});
+});
