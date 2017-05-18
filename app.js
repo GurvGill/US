@@ -64,7 +64,6 @@ var Chat = mongoose.model('chats', new Schema({
 }));
 
 
-
 var app = express();
 app.set('view engine', 'ejs');
 app.locals.pretty = true;
@@ -125,6 +124,10 @@ app.all ('*', function (req,res,next) {
 		global.mess = comment;
 	});
 
+	res.locals.announcement = global.a;
+	res.locals.count = global.c;
+	res.locals.com = global.com;
+	res.locals.num = global.num;
     next();
 });
 
@@ -183,16 +186,16 @@ app.post('/register', function(req,res) {
 		else{
 			User.findOne( {email: req.body.email} , function(err, user) {
     			if(!user){
-    				res.locals.error = 'Invalid email or password';
-    				res.render('login');
+    				error = 'Invalid email or password';
+    				res.redirect('/login');
     			}else{
     				if(req.body.password == user.password){
     					req.session.user = user;
     					res.locals.user = user;
     					res.redirect("/profile");
     				} else{
-    					res.locals.error = 'Invalid email or password';
-    					res.redirect('login');
+    					error = 'Invalid email or password';
+    					res.redirect('/login');
     				}	
     			}
     		});
@@ -211,24 +214,11 @@ app.post('/login', function(req,res) {
 	res.locals.error = error;
 	User.findOne( {email: req.body.email} , function(err, user) {
     	if(!user){
-    		res.locals.error =  'No account associated with that email';
-    		res.render('login');
+    		error = 'No account associated with that email';
+    		res.redirect('/login');
     	}else{
     		if(req.body.password == user.password){
     			req.session.user = user;
-    			Announcement.count(function(err, count)
-				{
-					if(err){}
-					global.c = count;
-				});
-				Announcement.find(function(err, announcement)
-				{
-					if(err){}
-					global.a = announcement;
-				});
-				res.locals.user = user;
-				res.locals.count = global.c;
-				res.locals.announcement = global.a;
     			res.redirect("/profile");
     		} else{
     			res.locals.error = 'Incorrect password';
@@ -244,39 +234,32 @@ app.get('/profile', function(req,res) {
 		User.findOne( { email: req.session.user.email }, function(err, user){
 			if(!user){
 				req.session.reset();
+				error = "Sign in to view your profile."
 				res.redirect("/login");
 			} else {
 				res.locals.user = user;
-				Announcement.count(function(err, count)
-				{
-					if(err){}
-					global.c = count;
-				});
-				Announcement.find({email: req.session.user.email},function(err, announcement)
-				{
-					if(err){}
-					global.a = announcement;
-				});
-				Comment.count(function(err, count){
-					if(err){}
-					global.num = count;
-				});
-				Comment.find(function(err,comment){
-					if(err){}
-					global.com = comment;
-				});
-				
-				res.locals.announcement = global.a;
-				res.locals.count = global.c;
-				res.locals.com = global.com;
-				res.locals.num = global.num;
 				res.render("profile");
+				error = '';
 			}
 		});
 	} else {
 		error = "You must Sign In to view your Profile.";
 		res.redirect("/login");
 	}
+});
+
+app.get('/get_profile', function(req,res) {
+	res.locals.error = error;
+	User.findOne( { email: req.query.email }, function(err, user){
+		if(!user){
+			error = "User does not exist anymore.";
+			res.redirect("/stream");
+		} else {
+			res.locals.user = user;
+			res.render("profile");
+			error = '';
+		}
+	}); 
 });
 
 app.get('/logout', function(req, res) {
@@ -292,12 +275,12 @@ app.get('/edit_profile', function(req,res){
 		User.findOne( { email: req.session.user.email }, function(err, user){
 		if(!user){
 			req.session.reset();
-			res.locals.error = "Please Sign in to edit profile.";
+			error = "Please Sign in to edit profile.";
 			res.redirect("/login");
 		} else {
 			res.locals.user = user;
 			res.render('edit_profile');
-			res.locals.error = '';
+			error = '';
 		}
 	});
 	} else{
@@ -312,7 +295,7 @@ app.post('/edit_profile', function(req,res){
 		User.findOne( { email: req.session.user.email }, function(err, user){
 		if(!user){
 			req.session.reset();
-			res.locals.error = "Please Sign in to edit profile.";
+			error = "Please Sign in to edit profile.";
 			res.redirect("/login");
 		} else {
 			User.update({_id: user._id},{$set: {bio: req.body.bio, username: req.body.username, company: req.body.company, email: req.body.email, phone: req.body.phone, birthday: req.body.birthday}}, function(err, bio){
@@ -334,7 +317,7 @@ app.post('/edit_profile', function(req,res){
 			res.locals.user = user;
 			res.locals.count = global.c;
 			res.locals.announcement = global.a;
-			res.locals.error = 'Profile edited.';
+			error = 'Profile edited.';
 			res.redirect('/profile');
 		}
 	});
@@ -351,7 +334,7 @@ app.get('/password', function(req, res){
 		User.findOne( { email: req.session.user.email }, function(err, user){
 		if(!user){
 			req.session.reset();
-			res.locals.error = "Please Sign in to change password.";
+			error = "Please Sign in to change password.";
 			res.redirect("/login");
 		} else {
 			Announcement.count(function(err, count)
@@ -368,7 +351,7 @@ app.get('/password', function(req, res){
 			res.locals.count = global.c;
 			res.locals.announcement = global.a;
 			res.render('password');
-			res.locals.error = '';
+			error = '';
 		}
 	});
 	} else{
@@ -384,12 +367,12 @@ app.get('/announcement', function(req,res){
 		User.findOne( { email: req.session.user.email }, function(err, user){
 		if(!user){
 			req.session.reset();
-			res.locals.error = "Please Sign in to Post an announcement";
+			error = "Please Sign in to Post an announcement";
 			res.redirect("/login");
 		} else {
 			res.locals.user = user;
 			res.render("announcement");
-			res.locals.error = '';
+			error = '';
 		}
 	});
 	} else{
@@ -405,7 +388,7 @@ app.post('/announcement', function(req,res){
 		User.findOne( { email: req.session.user.email }, function(err, user){
 		if(!user){
 			req.session.reset();
-			res.locals.error = "Please Sign in to Post an announcement";
+			error = "Please Sign in to Post an announcement";
 			res.redirect("/login");
 		} else {
 			res.locals.user = user;
@@ -425,22 +408,7 @@ app.post('/announcement', function(req,res){
 					res.locals.error = "Try again!";
 					res.render("announcement");
 				} else {
-					Announcement.count(function(err, count)
-					{
-						if(err){}
-						global.c = count;
-					});
-					Announcement.find(function(err, announcement)
-					{
-						if(err){}
-						global.a = announcement;
-					});
-					
-					res.locals.user = user;
-					res.locals.count = global.c;
-					res.locals.announcement = global.a;
 					res.redirect("/stream");
-					res.locals.error = '';
 				}
 			});	
 		}
@@ -458,7 +426,7 @@ app.get('/stream', function(req,res){
 		User.findOne( { email: req.session.user.email }, function(err, user){
 			if(!user){
 				req.session.reset();
-				res.locals.error = "Please Sign in. Stream is private access for Users only";
+				error = "Please Sign in. Stream is private access for Users only";
 				res.redirect("/login");
 			} else {
 				Announcement.count(function(err, count)
@@ -486,7 +454,7 @@ app.get('/stream', function(req,res){
 				res.locals.com = global.com;
 				res.locals.num = global.num;
 				res.render("stream");
-				res.locals.error = '';
+				error = '';
 			}
 		});
 	} else{
@@ -502,34 +470,10 @@ app.get('/comment', function(req,res){
 		User.findOne( { email: req.session.user.email }, function(err, user){
 		if(!user){
 			req.session.reset();
-			res.locals.error = "Please Sign in to comment";
+			error = "Please Sign in to comment";
 			res.redirect("/login");
 		} else {
-			Announcement.count(function(err, count)
-				{
-					if(err){}
-					global.c = count;
-				});
-				Announcement.find(function(err, announcement)
-				{
-					if(err){}
-					global.a = announcement;
-				});
-				Comment.count(function(err, count){
-					if(err)
-					global.num = count;
-				});
-				Comment.find(function(err,comment){
-					if(err){}
-					global.com = comment;
-				});
-				res.locals.user = user;
-				res.locals.announcement = global.a;
-				res.locals.count = global.c;
-				res.locals.com = global.com;
-				res.locals.num = global.num;
 				res.redirect("/stream");
-				res.locals.error = '';
 		}
 	});
 	} else{
@@ -570,31 +514,7 @@ app.post('/comment', function(req,res){
 						
 					}
 				});	
-				Announcement.count(function(err, count)
-				{
-					if(err){}
-					global.c = count;
-				});
-				Announcement.find(function(err, announcement)
-				{
-					if(err){}
-					global.a = announcement;
-				});
-				Comment.count(function(err, count){
-					if(err)
-					global.num = count;
-				});
-				Comment.find(function(err,comment){
-					if(err){}
-					global.com = comment;
-				});
-				res.locals.user = user;
-				res.locals.announcement = global.a;
-				res.locals.count = global.c;
-				res.locals.com = global.com;
-				res.locals.num = global.num;
-				res.redirect("/comment");
-				res.locals.error = '';		
+				res.redirect("/comment");	
 			}
 		});
 	} else{
@@ -630,26 +550,23 @@ app.post('/change_password', function(req,res){
 		User.findOne( { email: req.session.user.email }, function(err, user){
 		if(!user){
 			req.session.reset();
-			res.locals.error = "Please Sign in";
+			error = "Please Sign in";
 			res.redirect("/login");
 		} else {
 			res.locals.user = user;
 			if(req.body.current_pass != user.password){
 				res.locals.error = "Current Password is not correct."
 				res.render("password");
-				res.locals.error = '';
 			}
 			if(req.body.pass != req.body.con_pass){
 				res.locals.error = "Password field and Confirm Password field do not match."
 				res.render("password");
-				res.locals.error = '';
 			}
 			User.update({_id: user._id}, {$set: {password: req.body.pass}},function(err,argument) {
 				if(err){}
 				
 				res.locals.error = "Password changed."
 				res.render("password");
-				res.locals.error = '';
 			});
 		}
 	});
@@ -666,7 +583,7 @@ app.get('/company_stream', function(req,res){
 		User.findOne( { email: req.session.user.email }, function(err, user){
 			if(!user){
 				req.session.reset();
-				res.locals.error = "Please Sign in. Company Stream is private access for Users only";
+				error = "Please Sign in. Company Stream is private access for Users only";
 				res.redirect("/login");
 			} else {
 				Announcement.count(function(err, count)
@@ -694,7 +611,6 @@ app.get('/company_stream', function(req,res){
 				res.locals.com = global.com;
 				res.locals.num = global.num;
 				res.render("company_stream");
-				res.locals.error = '';
 			}
 		});
 	} else{
@@ -710,24 +626,10 @@ app.get('/company_chat', function(req,res){
 		User.findOne( { email: req.session.user.email }, function(err, user){
 			if(!user){
 				req.session.reset();
-				res.locals.error = "Please Sign in. Company Chat is private access for Users only";
+				error = "Please Sign in. Company Chat is private access for Users only";
 				res.redirect("/login");
-			} else {	
-				res.locals.user = user;
-				Message.count(function(err, count){
-					if(err){}
-					global.numb = count;
-				});
-				Message.find(function(err,comment){
-					if(err){}
-					global.mess = comment;
-				});
-				global.user = user;
-				global.req = req;
-				res.locals.count = global.numb;
-				res.locals.message = global.mess;
+			} else {
 				res.redirect("/company_chat2");
-				res.locals.error = '';
 			}
 		});
 	} else{
@@ -742,7 +644,7 @@ app.get('/company_chat2', function(req,res){
 		User.findOne( { email: req.session.user.email }, function(err, user){
 			if(!user){
 				req.session.reset();
-				res.locals.error = "Please Sign in. Company Chat is private access for Users only";
+				error = "Please Sign in. Company Chat is private access for Users only";
 				res.redirect("/login");
 			} else {	
 				res.locals.user = user;
@@ -774,7 +676,7 @@ app.post('/add_message', function(req,res){
 		User.findOne( { email: req.session.user.email }, function(err, user){
 			if(!user){
 				req.session.reset();
-				res.locals.error = "Please Sign in. Company Chat is private access for Users only";
+				error = "Please Sign in. Company Chat is private access for Users only";
 				res.redirect("/login");
 			} else {
 				var message = new Message({
@@ -791,13 +693,10 @@ app.post('/add_message', function(req,res){
 					{
 						res.locals.error = "Try again!";
 						res.render("company_chat");
-					} else {
-						
-					}
+					} else {}
 				});		
 			}
 			res.redirect("/company_chat");
-			res.locals.error = '';
 		});
 	} else{
 		res.locals.user = null;

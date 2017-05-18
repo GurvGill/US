@@ -63,12 +63,10 @@
             
          
                 <ul>
-                 <div class="ol-lg-9 col-md-9 col-sm-12 col-xs-12 pull-right" style="margin-right: 15px;">
                 <% for(var i = (count-1); i >= 0; i--) {%>
                     <a><%if(announcement[i].email == user.email) 
                    {%><%- include("partials/profile_post.ejs", {i: i}) %> <%}%> %></a>
                    <% } %>
-                   </div>
                 </ul>   
         
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
