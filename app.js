@@ -3,6 +3,17 @@ var path = require('path');
 var express = require('express');
 var mongoose = require('mongoose');
 var session = require('client-sessions');
+var multer = require('multer');
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/uploads/')
+    },
+    filename: function (req, file, cb) {
+        cb(null, req.session.user.email);
+  }
+})
+
+var upload = multer({ storage: storage });
 
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
@@ -18,7 +29,7 @@ var User = mongoose.model('User', new Schema({
 	phone: String,
 	bio: String,
 	birthday: String,
-	picture: Buffer,
+	picture: String,
 }));
 
 var Announcement = mongoose.model('announcements', new Schema({
@@ -49,7 +60,6 @@ var Message = mongoose.model('messages', new Schema({
 	job: String,
 	company: String,
 	message: String,
-	picture: Buffer,
 	date: Date,
 }));
 
@@ -59,7 +69,6 @@ var Chat = mongoose.model('chats', new Schema({
 	job: String,
 	company: String,
 	message: String,
-	picture: Buffer,
 	date: Date,
 }));
 
@@ -107,14 +116,6 @@ app.all ('*', function (req,res,next) {
 		if(err){}
 		global.com = comment;
 	});
-	Chat.count(function(err, count){
-		if(err){}
-		global.number = count;
-	});
-	Chat.find(function(err,comment){
-		if(err){}
-		global.message = comment;
-	});
 	Message.count(function(err, count){
 		if(err){}
 		global.numb = count;
@@ -128,6 +129,8 @@ app.all ('*', function (req,res,next) {
 	res.locals.count = global.c;
 	res.locals.com = global.com;
 	res.locals.num = global.num;
+	res.locals.counter = global.numb;
+	res.locals.message = global.mess;
     next();
 });
 
@@ -168,7 +171,7 @@ app.post('/register', function(req,res) {
 		phone: "(xxx)-xxx-xxxx",
 		bio: "No Bio",
 		birthday: "xx/xx/xxxx",
-		picture: "./public/images/6.jpg",
+		picture: "image.jpg",
 	});
 	if(req.body.password!=req.body.confirm_password)
 	{
@@ -192,7 +195,7 @@ app.post('/register', function(req,res) {
     				if(req.body.password == user.password){
     					req.session.user = user;
     					res.locals.user = user;
-    					res.redirect("/profile");
+    					res.redirect("/edit_profile");
     				} else{
     					error = 'Invalid email or password';
     					res.redirect('/login');
@@ -289,7 +292,7 @@ app.get('/edit_profile', function(req,res){
 		res.redirect('/login');
 	}
 });
-app.post('/edit_profile', function(req,res){
+app.post('/edit_profile', upload.any(), function(req,res){
 	res.locals.error = error;
 	if(req.session && req.session.user){
 		User.findOne( { email: req.session.user.email }, function(err, user){
@@ -298,26 +301,9 @@ app.post('/edit_profile', function(req,res){
 			error = "Please Sign in to edit profile.";
 			res.redirect("/login");
 		} else {
-			User.update({_id: user._id},{$set: {bio: req.body.bio, username: req.body.username, company: req.body.company, email: req.body.email, phone: req.body.phone, birthday: req.body.birthday}}, function(err, bio){
+			User.update({_id: user._id},{$set: {bio: req.body.bio, username: req.body.username, company: req.body.company, email: req.body.email, phone: req.body.phone, birthday: req.body.birthday, picture: req.body.email}}, function(err, bio){
 				if(err){}
 			});
-			Announcement.update({_id: req.body.id}, {$set: {comment:true}}, function(err, comment){
-				if(err){}
-			});
-			Announcement.count(function(err, count)
-			{
-				if(err){}
-				global.c = count;
-			});
-			Announcement.find(function(err, announcement)
-			{
-				if(err){}
-				global.a = announcement;
-			});
-			res.locals.user = user;
-			res.locals.count = global.c;
-			res.locals.announcement = global.a;
-			error = 'Profile edited.';
 			res.redirect('/profile');
 		}
 	});
@@ -337,19 +323,7 @@ app.get('/password', function(req, res){
 			error = "Please Sign in to change password.";
 			res.redirect("/login");
 		} else {
-			Announcement.count(function(err, count)
-			{
-				if(err){}
-				global.c = count;
-			});
-			Announcement.find(function(err, announcement)
-			{ 
-				if(err){}
-				global.a = announcement;
-			});
 			res.locals.user = user;
-			res.locals.count = global.c;
-			res.locals.announcement = global.a;
 			res.render('password');
 			error = '';
 		}
@@ -429,30 +403,7 @@ app.get('/stream', function(req,res){
 				error = "Please Sign in. Stream is private access for Users only";
 				res.redirect("/login");
 			} else {
-				Announcement.count(function(err, count)
-				{
-					if(err){}
-					global.c = count;
-				});
-				Announcement.find(function(err, announcement)
-				{
-					if(err){}
-					global.a = announcement;
-				});
-				Comment.count(function(err, count){
-					if(err){}
-					global.num = count;
-				});
-				Comment.find(function(err,comment){
-					if(err){}
-					global.com = comment;
-				});
-
 				res.locals.user = user;
-				res.locals.announcement = global.a;
-				res.locals.count = global.c;
-				res.locals.com = global.com;
-				res.locals.num = global.num;
 				res.render("stream");
 				error = '';
 			}
@@ -586,30 +537,7 @@ app.get('/company_stream', function(req,res){
 				error = "Please Sign in. Company Stream is private access for Users only";
 				res.redirect("/login");
 			} else {
-				Announcement.count(function(err, count)
-				{
-					if(err){}
-					global.c = count;
-				});
-				Announcement.find(function(err, announcement)
-				{
-					if(err){}
-					global.a = announcement;
-				});
-				Comment.count(function(err, count){
-					if(err){}
-					global.num = count;
-				});
-				Comment.find(function(err,comment){
-					if(err){}
-					global.com = comment;
-				});
-
 				res.locals.user = user;
-				res.locals.announcement = global.a;
-				res.locals.count = global.c;
-				res.locals.com = global.com;
-				res.locals.num = global.num;
 				res.render("company_stream");
 			}
 		});
@@ -648,17 +576,6 @@ app.get('/company_chat2', function(req,res){
 				res.redirect("/login");
 			} else {	
 				res.locals.user = user;
-				Message.count(function(err, count){
-					if(err){}
-					global.numb = count;
-				});
-				Message.find(function(err,comment){
-					if(err){}
-					global.mess = comment;
-				});
-				
-				res.locals.count = global.numb;
-				res.locals.message = global.mess;
 				res.render("company_chat");
 				res.locals.error = '';
 			}
@@ -685,7 +602,6 @@ app.post('/add_message', function(req,res){
 					job: user.job,
 					company: user.company,
 					message: req.body.message,
-					picture: user.picture,
 					date: new Date,
 				});
 				message.save(function(err) {

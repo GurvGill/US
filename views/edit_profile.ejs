@@ -13,16 +13,16 @@
     <%if(error!="") {%> <div class= "alert alert-danger" <strong> <%= error %> </strong> </div> <%}%>
 </header>
 <div class="container">
-    <h1>Edit Profile</h1>
+    <h1>Update Profile</h1>
   	<hr>
 	<div class="row">
       <!-- left column -->
+      <form method="post" action="/edit_profile" enctype="multipart/form-data">
       <div class="col-md-3">
         <div class="text-center">
-          <img src=<%=user.image%> class="avatar img-circle" alt="avatar">
-          <h6>Upload a different photo...</h6>
-          
-          <input type="file" class="form-control">
+          <img src="uploads/<%=user.picture%>" width="300px" height="300px" class="avatar img-circle" alt="avatar">
+          <h6>Upload a different photo...</h6>  
+          <input type="file" name="image" class="form-control">
         </div>
       </div>
       
@@ -34,8 +34,7 @@
           <a class="panel-close close" data-dismiss="alert">×</a>
         </div>
         <h3>Personal info</h3>
-        
-        <form class="form-horizontal" method="post" action="/edit_profile">
+        <div class="form-horizontal">
           <div class="form-group">
             <label class="col-lg-3 control-label">Bio:</label>
             <div class="col-lg-8">
@@ -78,6 +77,7 @@
               <button type="submit" class="btn btn-primary" href="/edit_profile">Save Changes</button>
               <input type="reset" class="btn btn-primary" value="Cancel">
             </div>
+          </div>
           </div>
         </form>
       </div>

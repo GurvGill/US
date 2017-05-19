@@ -46,14 +46,14 @@
             <div class="row chat-toolbar-row">
                 <div class="col-sm-12">
                     <div class="btn-group chat-toolbar" role="group" aria-label="...">
-                        <a id="chat-leave" class="btn btn-default ticket-option">
+                        <a href="/profile" id="chat-leave" class="btn btn-default ticket-option">
                           Leave Chat:
                         </a>
                     </div>
                 </div>
             </div>
     <div class="row current-chat-area" id="content">         
-            <%for(var i=0;i<=count-1;i++) {%>  
+            <%for(var i=0;i<=counter-1;i++) {%>  
             <%if(message[i].company == user.company) {%> 
                  <%if(message[i].email == user.email) {%>
                   <div class="col-md-12">                
@@ -62,7 +62,7 @@
                                 <div class="media-body">
                                     <div class="media">
                                         <a class="pull-left" style="margin-left: 100px;" href="#">
-                                            <img class="media-object img-circle " src="https://app.teamsupport.com/dc/1078/UserAvatar/1839999/48/1470773165634">
+                                            <img class="media-object img-circle " src="uploads/<%=message[i].email%>" width="50px" height="50px">
                                         </a>
                                         <div class="pull-left">
                                             <%= message[i].message %>
@@ -83,7 +83,7 @@
                                 <div class="media-body">
                                     <div class="media">
                                         <a class="pull-right" style="margin-right: 100px; " href="#">
-                                            <img class="media-object img-circle " src="https://app.teamsupport.com/dc/1078/UserAvatar/1839999/48/1470773165634">
+                                            <img class="media-object img-circle " src="uploads/<%=message[i].email%>" width="50px" height="50px">
                                         </a>
                                         <div class="pull-right">
                                             <%= message[i].message %>
@@ -134,6 +134,7 @@
 <script src="javascripts/functions.js"></script>
 <script>wow = new WOW({}).init();</script>
 <script>
+    $("#content").scrollTop($("#content")[0].scrollHeight);
     $(function (m){
         var socket = io();
         $('form').submit(function(){
