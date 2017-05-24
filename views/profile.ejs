@@ -10,6 +10,8 @@
 <body>
 <header>
     <%- include('partials/navbar.ejs', {active: "usermenu"}); %>
+    <%if(error=="")%>
+    <%if(error!="") {%> <div class= "alert alert-danger" <strong> <%= error %> </strong> </div> <%}%>
 </header>
         <div style="padding-top:50px;"> </div>
         <div class="col-lg-3 col-md-3 hidden-sm hidden-xs">
@@ -59,12 +61,14 @@
             <hr>
             </div>
             
-         
+          
                 <ul>
                 <% for(var i = (count-1); i >= 0; i--) {%>
+                <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12 pull-right" style="margin-right: 20px;">
                     <a><%if(announcement[i].email == user.email) 
                    {%><%- include("partials/profile_post.ejs", {i: i}) %> <%}%> %></a>
                    <% } %>
+                   </div>
                 </ul>   
         
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

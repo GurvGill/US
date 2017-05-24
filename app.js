@@ -404,6 +404,30 @@ app.get('/stream', function(req,res){
 				res.redirect("/login");
 			} else {
 				res.locals.user = user;
+				Announcement.count(function(err, count)
+				{
+					if(err){}
+					global.c = count;
+				});
+				Announcement.find(function(err, announcement)
+				{
+					if(err){}
+					global.a = announcement;
+				});
+				Comment.count(function(err, count){
+					if(err){}
+					global.num = count;
+				});
+				Comment.find(function(err,comment){
+					if(err){}
+					global.com = comment;
+				});
+
+				res.locals.user = user;
+				res.locals.announcement = global.a;
+				res.locals.count = global.c;
+				res.locals.com = global.com;
+				res.locals.num = global.num;
 				res.render("stream");
 				error = '';
 			}
@@ -618,6 +642,28 @@ app.post('/add_message', function(req,res){
 		res.locals.user = null;
 		error = "Please Sign in. Company Chat is private access for Users only.";
 		res.redirect("/login");
+	}
+});
+
+app.get('/calendar', function(req,res){
+	res.locals.error = error;
+	if(req.session && req.session.user){
+		User.findOne( { email: req.session.user.email }, function(err, user){
+		if(!user){
+			req.session.reset();
+			error = "Please sign in.";
+			res.redirect("/login");
+		} else {
+			res.locals.user = user;
+			res.render("calendar");
+			error = '';
+		}
+	});
+	} else{
+		res.locals.user = null;
+		error = "Please sign in.";
+		res.redirect('/login');
+		error = '';
 	}
 });
 
