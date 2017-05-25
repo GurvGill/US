@@ -12,13 +12,14 @@ body {
   font-weight:300;
   line-height:1.6em;
   color:#000;
+  background-image: url(https://bizlib247.files.wordpress.com/2011/04/global1.jpg);
   background-color:#e8e8e8;
   overflow-x:hidden;
   padding:50px;
 }
 
-hi,h2,h3,h4,h5,h6 {
-  color:#333;
+h1,h2,h3,h4,h5,h6 {
+  color:#fff;
   line-height:1.1em;
 }
 
@@ -244,7 +245,7 @@ overflow: hidden;
 }
 
 .main-feature .text-center {
-  background:#000;
+  background:#444;
   padding:70px;
   margin-top:30px;
 }

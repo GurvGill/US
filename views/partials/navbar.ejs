@@ -16,11 +16,11 @@
                                 <li><a href="/company_chat">Company Chat</a></li>
                                 <li><a href="/calendar">Calendar</a></li>
                             </ul>
-                                  <form class="navbar-form navbar-search navbar-left" role="search">
+                                  <form class="navbar-form navbar-search navbar-left" method="post" action="/search">
                                 <div class="input-group">
                                     <input type="text" name=search class="form-control">
                                     <div class="input-group-btn">
-                                        <button type="login_button" class="btn btn-search btn" href="/search">
+                                        <button type="submit" class="btn btn-search btn" href="/search">
                                             <span class="glyphicon glyphicon-search"></span>
                                             <span class="label-icon">Search</span>
                                         </button>
@@ -42,9 +42,9 @@
                                      <div class="navbar-content">
                                         <div class="row">
                                             <div class="col-md-5">
-                                                <img src="https://lut.im/7JCpw12uUT/mY0Mb78SvSIcjvkf.png" alt="Alternate Text" class="img-responsive" width="120px" height="120px" />
+                                                <img class="thumbnail img-responsive" src="uploads/<%=user.picture%>" width="300px" height="300px">
                                                 <p class="text-center small">
-                                                    <a href="./3X6zm">Change Photo</a></p>
+                                                    <a href="./edit_profile">Change Photo</a></p>
                                             </div>
                                             <div class="col-md-7">
                                                 <span> <%= user.username %> </span>

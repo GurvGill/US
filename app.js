@@ -222,6 +222,16 @@ app.post('/login', function(req,res) {
     	}else{
     		if(req.body.password == user.password){
     			req.session.user = user;
+    			User.find({company: {$in: user.company}}, function(err, contacts){
+					if(err) {}
+					global.contacts = contacts;
+				});
+				User.count({company: {$in: user.company}}, function(err, contacts){
+					if(err) {}
+					global.contacts_count = contacts;
+				});
+				res.locals.contacts_count = global.contacts_count;
+				res.locals.contacts = global.contacts;
     			res.redirect("/profile");
     		} else{
     			res.locals.error = 'Incorrect password';
@@ -241,12 +251,52 @@ app.get('/profile', function(req,res) {
 				res.redirect("/login");
 			} else {
 				res.locals.user = user;
+				User.find({company: {$in: user.company}}, function(err, contacts){
+					if(err) {}
+					global.contacts = contacts;
+				});
+				User.count({company: {$in: user.company}}, function(err, contacts){
+					if(err) {}
+					global.contacts_count = contacts;
+				});
+				res.locals.contacts_count = global.contacts_count;
+				res.locals.contacts = global.contacts;
 				res.render("profile");
 				error = '';
 			}
 		});
 	} else {
 		error = "You must Sign In to view your Profile.";
+		res.redirect("/login");
+	}
+});
+
+app.get('/contacts', function(req,res){
+	res.locals.error = error;
+	if(req.session && req.session.user){
+		User.findOne( { email: req.session.user.email }, function(err, user){
+			if(!user){
+				req.session.reset();
+				error = "Sign in to view your Contacts."
+				res.redirect("/login");
+			} else {
+				res.locals.user = user;
+				User.find({company: {$in: user.company}}, function(err, contacts){
+					if(err) {}
+					global.contacts = contacts;
+				});
+				User.count({company: {$in: user.company}}, function(err, contacts){
+					if(err) {}
+					global.contacts_count = contacts;
+				});
+				res.locals.contacts_count = global.contacts_count;
+				res.locals.contacts = global.contacts;
+				res.render("contacts");
+				error = '';
+			}
+		});
+	} else {
+		error = "You must Sign In to view your Contacts.";
 		res.redirect("/login");
 	}
 });
@@ -515,7 +565,6 @@ app.get('/change_password', function(err,res){
 	} else{
 		res.locals.user = null;
 		res.redirect('/index');
-		error = '';
 	}
 });
 
@@ -645,6 +694,49 @@ app.post('/add_message', function(req,res){
 	}
 });
 
+app.get('/add_event', function(req,res){
+	res.locals.error = error;
+	if(req.session && req.session.user){
+		User.findOne( { email: req.session.user.email }, function(err, user){
+		if(!user){
+			req.session.reset();
+			error = "Please sign in.";
+			res.redirect("/login");
+		} else {
+			res.locals.user = user;
+			res.render("event");
+			error = '';
+		}
+	});
+	} else{
+		res.locals.user = null;
+		error = "Please sign in to view your events";
+		res.redirect('/login');
+	}
+});
+
+app.get('/events', function(req,res){
+	res.locals.error = error;
+	if(req.session && req.session.user){
+		User.findOne( { email: req.session.user.email }, function(err, user){
+		if(!user){
+			req.session.reset();
+			error = "Please sign in.";
+			res.redirect("/login");
+		} else {
+			res.locals.user = user;
+			res.render("events");
+			error = '';
+		}
+	});
+	} else{
+		res.locals.user = null;
+		error = "Please sign in to view your events";
+		res.redirect('/login');
+	}
+});
+
+
 app.get('/calendar', function(req,res){
 	res.locals.error = error;
 	if(req.session && req.session.user){
@@ -661,12 +753,34 @@ app.get('/calendar', function(req,res){
 	});
 	} else{
 		res.locals.user = null;
-		error = "Please sign in.";
+		error = "Please sign in to view your Calendar";
 		res.redirect('/login');
-		error = '';
 	}
 });
 
+app.get("/calendar2", function(req,res){
+	res.locals.error = error;
+	if(req.session && req.session.user){
+		User.findOne( { email: req.session.user.email }, function(err, user){
+		if(!user){
+			req.session.reset();
+			error = "Please sign in.";
+			res.redirect("/login");
+		} else {
+			res.locals.user = user;
+			res.render("calendar2");
+			error = '';
+		}
+	});
+	} else{
+		res.locals.user = null;
+		error = "Please sign in to view your Calendar";
+		res.redirect('/login');
+	}
+});
+app.post('/search', function(req,res){
+	
+});
 var io = require('socket.io').listen(app.listen(3000));
 
 io.on('connection', function (socket) {

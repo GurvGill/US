@@ -1,0 +1,90 @@
+<head>
+    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.1.0/css/font-awesome.min.css">
+    <link href="stylesheets/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="stylesheets/font-awesome.min.css">
+    <link rel="stylesheet" href="stylesheets/jquery.bxslider.css">
+    <link rel="stylesheet" type="text/css" href="stylesheets/isotope.css" media="screen" />
+    <link rel="stylesheet" href="stylesheets/animate.css">
+    <link rel="stylesheet" href="javascripts/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+    <link href="stylesheets/prettyPhoto.css" rel="stylesheet" />
+    <link href="stylesheets/calendar.css" rel="stylesheet" />
+    <link href="stylesheets/style.css" rel="stylesheet" />
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"/>
+    <link rel="stylesheet" href="https://bootswatch.com/cosmo/bootstrap.min.css"/>
+</head>
+<header>
+    <%- include('partials/navbar.ejs', {active: "usermenu"}); %>
+    <%if(error=="")%>
+    <%if(error!="") {%> <div class= "alert alert-danger" <strong> <%= error %> </strong> </div> <%}%>
+</header>
+<body>
+    <div class="container">
+        <div class="row">
+            <div id="overview" class="col-sm-4 col-md-3 ">
+                <h2>Events</h2>
+                <a href="/add_event"> <button type="button" class="btn btn-primary btn-block">Add an Event</button> </a>
+            </div>
+            <div id="calendar" class="col-sm-8 col-md-9">
+                 <h2> <%= user.username %>'s <small>Events</small><i class="fa fa-plus fa-fw pull-right small btn btn-block"></i></h2>
+
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="calendar fc fc-ltr">
+                                <table class="fc-header" style="width:100%">
+                                    <tbody>
+                                        <tr>
+                                            <td class="fc-header-left">
+                                                <div class="btn-group">
+                                                    <button type="button" class="fc-button-prev fc-corner-left btn btn-default btn-sm"> <i class="fa fa-chevron-left"></i>
+
+                                                    </button>
+                                                    <button type="button" class="btn btn-default btn-sm"> <i class="fa fa-chevron-right"></i>
+
+                                                    </button>
+                                                </div> <span class="fc-button fc-button-prev fc-state-default fc-corner-left" unselectable="on"><span class="fc-text-arrow">‹</span></span> <span class="fc-button fc-button-next fc-state-default fc-corner-right" unselectable="on"><span class="fc-text-arrow">›</span></span> <span class="fc-header-space"></span><span class="fc-button fc-button-today fc-state-default fc-corner-left fc-corner-right fc-state-disabled" unselectable="on">05/04/2017</span>
+
+                                            </td>
+                                            <td class="fc-header-center"> <span class="fc-header-title">          <h2>May 2017</h2>          </span>
+
+                                            </td>
+                                            <td class="fc-header-right"> <span class="fc-button fc-button-month fc-state-default fc-corner-left " unselectable="on">month</span><span class="fc-button fc-button-agendaWeek fc-state-default" unselectable="on">week</span><span class="fc-button fc-button-agendaDay fc-state-default fc-corner-right fc-state-active" unselectable="on">day</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                               
+                                        <table class="fc-border-separate" style="width:100%" cellspacing="0">
+                                            
+                                           <tbody>
+                                           <br>
+                                           <h1> Date: 05/25/2017 </h1>
+                                           <hr>
+                                           <h1> Event Description: Meet with manager. </h1>
+                                           <h1> Event Starting Time: 11:00pm </h1>
+                                           <h1> Event Ending Time: 12:00am </h1>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script src="javascripts/jquery-2.1.1.min.js"></script>
+<script src="javascripts/bootstrap1.min.js"></script>
+<script src="javascripts/wow.min.js"></script>
+<script src="javascripts/fancybox/jquery.fancybox.pack.js"></script>
+<script src="javascripts/jquery.easing.1.3.js"></script>
+<script src="javascripts/jquery.bxslider.min.js"></script>
+<script src="javascripts/jquery.prettyPhoto.js"></script>
+<script src="javascripts/jquery.isotope.min.js"></script>
+<script src="javascripts/functions.js"></script>
+<script>wow = new WOW({}).init();</script>
+
+</body>

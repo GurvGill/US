@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Post an announcement</title>
+    <!-- Bootstrap -->
     <link href="stylesheets/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="stylesheets/font-awesome.min.css">
     <link rel="stylesheet" href="stylesheets/jquery.bxslider.css">
@@ -25,7 +25,7 @@
     <div class="row main">
         <div class="panel-heading">
             <div class="panel-title text-center">
-                <h1 class="title">Post an announcement</h1>
+                <h1 class="title">Create an Event</h1>
                 <hr />
             </div>
         </div>
@@ -41,17 +41,29 @@
                     <hr>
                     <div class="form-group">
                         <div class="btn-default" style="margin-right: 40px;">
-                            <textarea type="text" name="announcement" class="form-control" rows="5" placeholder="Enter an announcement"></textarea>
+                        <label class="form-control"> Description: </label>
+                            <textarea type="text" name="event" class="form-control" rows="5" placeholder="Enter event description"></textarea>
                             </div>
                             <hr>
                             <div class="btn-default" style="margin-right: 40px;">
-                                <textarea type="text" name="tag" class="form-control" rows="1" placeholder="Enter a Tag"></textarea>
+                            <label class="form-control"> Date: </label>
+                                <textarea type="text" name="day" class="form-control" rows="1" placeholder="xx/xx/xxxx"></textarea>
+                                </div>
+                                 <hr>    
+                             <div class="btn-default" style="margin-right: 40px;">
+                            <label class="form-control"> Starting Time: </label>
+                                <textarea type="text" name="startingtime" class="form-control" rows="1" placeholder="xx:xx"></textarea>
+                                </div>
+                                 <hr>
+                             <div class="btn-default" style="margin-right: 40px;">
+                            <label class="form-control"> End Time: </label>
+                                <textarea type="text" name="endingtime" class="form-control" rows="1" placeholder="xx:xx"></textarea>
                                 </div>
                                  <hr>
                              </div>
                              <span class = "margin-right" >
                         <div class="form-group">
-                        <button type="submit" class="btn btn-default btn-lg  login-button" href="/announcement">Post Announcement</button>
+                        <a href="/calendar2" class="btn btn-default btn-lg  login-button" >Save Event to Calendar</a>
                         </div>
                         </span>
             </div>
