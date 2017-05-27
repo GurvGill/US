@@ -40,6 +40,7 @@ var Announcement = mongoose.model('announcements', new Schema({
 	company: String,
 	job: String,
 	tag: String,
+	picture: String,
 	comment: Boolean,
 	date: Date,
 }));
@@ -423,6 +424,7 @@ app.post('/announcement', function(req,res){
 				company: user.company,
 				job: user.job,
 				tag: req.body.tag,
+				picture: user.picture,
 				comment: false,
 				date: new Date,
 			});
@@ -611,6 +613,30 @@ app.get('/company_stream', function(req,res){
 				res.redirect("/login");
 			} else {
 				res.locals.user = user;
+				Announcement.count(function(err, count)
+				{
+					if(err){}
+					global.c = count;
+				});
+				Announcement.find(function(err, announcement)
+				{
+					if(err){}
+					global.a = announcement;
+				});
+				Comment.count(function(err, count){
+					if(err){}
+					global.num = count;
+				});
+				Comment.find(function(err,comment){
+					if(err){}
+					global.com = comment;
+				});
+
+				res.locals.user = user;
+				res.locals.announcement = global.a;
+				res.locals.count = global.c;
+				res.locals.com = global.com;
+				res.locals.num = global.num;
 				res.render("company_stream");
 			}
 		});
@@ -778,9 +804,7 @@ app.get("/calendar2", function(req,res){
 		res.redirect('/login');
 	}
 });
-app.post('/search', function(req,res){
-	
-});
+
 var io = require('socket.io').listen(app.listen(3000));
 
 io.on('connection', function (socket) {

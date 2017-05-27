@@ -62,16 +62,12 @@
             <hr>
             </div>
             
-          
                 <ul>
-                <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12 pull-right" style="margin-right: 20px;">
-                <% for(var i = (count-1); i >= 0; i--) {%>
+                <%for(var i = (count-1); i >= 0; i--) {%>
                     <a><%if(announcement[i].email == user.email) 
                    {%><%- include("partials/profile_post.ejs", {i: i}) %> <%}%> %></a>
                    <% } %>
-                   </div>
-                </ul>   
-        
+                   </ul>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="javascripts/jquery-2.1.1.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->

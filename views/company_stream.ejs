@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+     <title><%=user.company%>'s Stream</title>
+
     <link href="stylesheets/stream.css" rel="stylesheet" />
 
     <link rel="stylesheet" href="stylesheets/font-awesome.min.css"/>
@@ -27,8 +29,6 @@
             <%if(announcement[i].company==user.company) {%>
              <% temp=1 %>
              <% } %>
-          <%if(announcement[i].company!=user.company) {%>
-            <% } %>
         <% } %>
         <h1><%if(temp==0) {%> <div style="margin-left: 40px;"> <p>  There are no Announcements! </p> </div><%}%> </h1>
         <ul><%if(temp==0) {%> <br> <li class="btn btn-default"><a style="font-size:20px;" class="btn btn-default" href="/announcement">  Post an announcement </a></li><%}%> </ul>
