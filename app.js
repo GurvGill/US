@@ -819,7 +819,7 @@ app.get("/calendar2", function(req,res){
 	}
 });
 
-var io = require('socket.io').listen(app.listen((process.env.PORT || 5000));
+var io = require('socket.io').listen(app.listen(process.env.PORT || 5000));
 
 io.on('connection', function (socket) {
     socket.emit('message', { message: 'welcome to the chat' });
