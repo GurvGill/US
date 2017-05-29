@@ -61,6 +61,7 @@ var Message = mongoose.model('messages', new Schema({
 	job: String,
 	company: String,
 	message: String,
+	picture: String,
 	date: Date,
 }));
 
@@ -99,40 +100,62 @@ app.use(session({
 }));
 
 app.all ('*', function (req,res,next) {
-	Announcement.count(function(err, count)
-	{
-		if(err){}
-		global.c = count;
-	});
-	Announcement.find(function(err, announcement)
-	{
-		if(err){}
-		global.a = announcement;
-	});
-	Comment.count(function(err, count){
-		if(err){}
-		global.num = count;
-	});
-	Comment.find(function(err,comment){
-		if(err){}
-		global.com = comment;
-	});
-	Message.count(function(err, count){
-		if(err){}
-		global.numb = count;
-	});
-	Message.find(function(err,comment){
-		if(err){}
-		global.mess = comment;
-	});
-
-	res.locals.announcement = global.a;
-	res.locals.count = global.c;
-	res.locals.com = global.com;
-	res.locals.num = global.num;
-	res.locals.counter = global.numb;
-	res.locals.message = global.mess;
-    next();
+	if(req.session && req.session.user){
+		User.findOne( { email: req.session.user.email }, function(err, user){
+			if(!user){
+				req.session.reset();
+				error = "Sign in."
+				res.redirect("/login");
+			} else {
+				res.locals.user = user;
+				Announcement.count(function(err, count)
+				{
+					if(err){}
+					global.c = count;
+				});
+				Announcement.find(function(err, announcement)
+				{
+					if(err){}
+					global.a = announcement;
+				});
+				Comment.count(function(err, count){
+					if(err){}
+					global.num = count;
+				});
+				Comment.find(function(err,comment){
+					if(err){}
+					global.com = comment;
+				});
+				Message.count(function(err, count){
+					if(err){}
+					global.numb = count;
+				});
+				Message.find(function(err,comment){
+					if(err){}
+					global.mess = comment;
+				});
+				User.find({company: {$in: user.company}}, function(err, contacts){
+					if(err) {}
+					global.contacts = contacts;
+				});
+				User.count({company: {$in: user.company}}, function(err, contacts){
+					if(err) {}
+					global.contacts_count = contacts;
+				});
+				res.locals.contacts_count = global.contacts_count;
+				res.locals.contacts = global.contacts;
+				res.locals.announcement = global.a;
+				res.locals.count = global.c;
+				res.locals.com = global.com;
+				res.locals.num = global.num;
+				res.locals.counter = global.numb;
+				res.locals.message = global.mess;
+			    next();
+			}
+		});
+	} else {
+		next();
+	}
 });
 
 app.get('/', function (req, res) {
@@ -223,16 +246,6 @@ app.post('/login', function(req,res) {
     	}else{
     		if(req.body.password == user.password){
     			req.session.user = user;
-    			User.find({company: {$in: user.company}}, function(err, contacts){
-					if(err) {}
-					global.contacts = contacts;
-				});
-				User.count({company: {$in: user.company}}, function(err, contacts){
-					if(err) {}
-					global.contacts_count = contacts;
-				});
-				res.locals.contacts_count = global.contacts_count;
-				res.locals.contacts = global.contacts;
     			res.redirect("/profile");
     		} else{
     			res.locals.error = 'Incorrect password';
@@ -701,6 +714,7 @@ app.post('/add_message', function(req,res){
 					job: user.job,
 					company: user.company,
 					message: req.body.message,
+					picture: user.picture,
 					date: new Date,
 				});
 				message.save(function(err) {
